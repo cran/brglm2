@@ -1,16 +1,36 @@
+# Copyright (C) 2016, 2017 Ioannis Kosmidis
+# function `AS_median_adjustment`: Copyright (C) 2017, Euloge Clovis Kenne Pagui, Ioannis Kosmidis
+
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 or 3 of the License
+#  (at your option).
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  A copy of the GNU General Public License is available at
+#  http://www.r-project.org/Licenses/
+
+
 #' Fitting function for \code{\link{glm}} for reduced-bias
 #' estimation and inference
 #'
 #' \code{\link{brglmFit}} is a fitting function for \code{\link{glm}}
 #' that fits generalized linear models using implicit and explicit
 #' bias reduction methods. Currently supported methods include the
-#' implicit adjusted scores approach in Firth (1993) and Kosmidis \&
-#' Firth (2009), the correction of the asymptotic bias in Cordeiro &
-#' McCullagh (1991), and maximum likelihood.  Estimation is performed
-#' using a quasi Fisher scoring iteration based on the iterative
+#' mean bias-reducing adjusted scores approach in Firth (1993) and
+#' Kosmidis \& Firth (2009), the median bias-reduction adjusted scores
+#' approach in Kenne et al. (2016), the correction of the asymptotic
+#' bias in Cordeiro & McCullagh (1991), and maximum likelihood.
+#' Estimation is performed using a quasi Fisher scoring iteration,
+#' which in the case of mean-bias reduction resembles an iterative
 #' correction of the asymptotic bias of the Fisher scoring iterates.
 #'
 #' @inheritParams stats::glm.fit
+#' @aliases brglm_fit
 #' @param x \code{x} is a design matrix of dimension \code{n * p},
 #' @param y \code{y} is a vector of observations of length \code{n}
 #' @param control a list of parameters controlling the fitting
@@ -39,9 +59,12 @@
 #' detail in Kosmidis (2014). The quasi (or modified) Fisher scoring
 #' iteration is described in Kosmidis (2010) and is based on the
 #' iterative correction of the asymptotic bias of the Fisher scoring
-#' iterates. A quick description of the quasi Fisher scoring iteration
-#' is also given in one of the vignettes of the *enrichwith* R package
-#' (see,
+#' iterates. A mathematical description of the supported adjustments
+#' and the quasi Fisher scoring iteration is provided in the iteration
+#' vignette (see,
+#' \url{https://cran.r-project.org/package=brglm2/vignettes/iteration.pdf}).
+#' A quick description of the quasi Fisher scoring iteration is also
+#' given in one of the vignettes of the *enrichwith* R package (see,
 #' \url{https://cran.r-project.org/package=enrichwith/vignettes/bias.html}).
 #'
 #'
@@ -56,7 +79,9 @@
 #' \code{fixed_totals} can be used to constrain the means of a poisson
 #' model to add up to the corresponding observed counts according to
 #'
-#' @author Ioannis Kosmidis \email{i.kosmidis@ucl.ac.uk}
+#' \code{brglm_fit} is an alias to \code{brglmFit}.
+#'
+#' @author Ioannis Kosmidis [aut, cre] \email{i.kosmidis@ucl.ac.uk}, Euloge Clovis Kenne Pagui [ctb] \email{kenne@stat.unipd.it}
 #'
 #' @seealso \code{\link{glm.fit}} and \code{\link{glm}}
 #'
@@ -68,6 +93,10 @@
 #'
 #' Firth D. (1993). Bias reduction of maximum likelihood estimates,
 #' Biometrika, **80**, 27-38
+#'
+#' Kenne Pagui E C, Salvan A and Sartori N (2016). Median bias
+#' reduction of maximum likelihood estimates. *arXiv*,
+#' **arXiv:1604.04768**
 #'
 #' Kosmidis I and Firth D (2009). Bias reduction in exponential family
 #' nonlinear models. *Biometrika*, **96**, 793-804
@@ -85,14 +114,19 @@
 #' data("lizards")
 #' # Fit the model using maximum likelihood
 #' lizardsML <- glm(cbind(grahami, opalinus) ~ height + diameter +
-#'                      light + time, family = binomial(logit), data = lizards,
+#'                  light + time, family = binomial(logit), data = lizards,
 #'                  method = "glm.fit")
-#' # Now the bias-reduced fit:
-#' lizardsBR <- glm(cbind(grahami, opalinus) ~ height + diameter +
-#'                      light + time, family = binomial(logit), data = lizards,
-#'                  method = "brglmFit")
+#' # Mean bias-reduced fit:
+#' lizardsBR_mean <- glm(cbind(grahami, opalinus) ~ height + diameter +
+#'                       light + time, family = binomial(logit), data = lizards,
+#'                       method = "brglmFit")
+#' # Median bias-reduced fit:
+#' lizardsBR_median <- glm(cbind(grahami, opalinus) ~ height + diameter +
+#'                         light + time, family = binomial(logit), data = lizards,
+#'                         method = "brglmFit", type = "AS_median")
 #' summary(lizardsML)
-#' summary(lizardsBR)
+#' summary(lizardsBR_median)
+#' summary(lizardsBR_mean)
 #'
 #'
 #' ## Another example from
@@ -104,10 +138,12 @@
 #' data("coalition", package = "brglm2")
 #' # The maximum likelihood fit with log link
 #' coalitionML <- glm(duration ~ fract + numst2, family = Gamma, data = coalition)
-#' # The bias-reduced fit
-#' coalitionBR <- update(coalitionML, method = "brglmFit")
+#' # The mean bias-reduced fit
+#' coalitionBR_mean <- update(coalitionML, method = "brglmFit")
 #' # The bias-corrected fit
 #' coalitionBC <- update(coalitionML, method = "brglmFit", type = "correction")
+#' # The median bias-corrected fit
+#' coalitionBR_median <- update(coalitionML, method = "brglmFit", type = "AS_median")
 #' }
 #'
 #' \dontrun{
@@ -116,30 +152,41 @@
 #'
 #' anorexML <- glm(Postwt ~ Prewt + Treat + offset(Prewt),
 #'                 family = gaussian, data = anorexia)
-#' anorexBR <- update(anorexML, method = "brglmFit")
 #' anorexBC <- update(anorexML, method = "brglmFit", type = "correction")
+#' anorexBR_mean <- update(anorexML, method = "brglmFit")
+#' anorexBR_median <- update(anorexML, method = "brglmFit", type = "AS_median")
 #'
-#' ## The outputs are identical, because the maximum likelihood
-#' ## estimators of the regression parameters are unbiased when family
-#' ## is Gaussian, and the bias-reduced estimator of the dispersion is
-#' ## the unbiased, by degree of freedom adjustment, estimator of the
-#' ## residual variance.
+#' ## All methods return the same estimates for the regression
+#' ## parameters because the maximum likelihood estimator is normally
+#' ## distributed around the `true` value under the model (hence, both
+#' ## mean and component-wise median unbiased). The Wald tests for
+#' ## anorexBC and anorexBR_mean differ from anorexML
+#' ## because the bias-reduced estimator of the dispersion is the
+#' ## unbiased, by degree of freedom adjustment (divide by n - p),
+#' ## estimator of the residual variance. The Wald tests from
+#' ## anorexBR_median are based on the median bias-reduced estimator
+#' ## of the dispersion that results from a different adjustment of the
+#' ## degrees of freedom (divide by n - p - 2/3)
 #' summary(anorexML)
-#' summary(anorexBR)
 #' summary(anorexBC)
+#' summary(anorexBR_mean)
+#' summary(anorexBR_median)
 #' }
 #'
 #' ## endometrial data from Heinze \& Schemper (2002) (see ?endometrial)
 #' data("endometrial", package = "brglm2")
 #' endometrialML <- glm(HG ~ NV + PI + EH, data = endometrial,
 #'                      family = binomial("probit"))
-#' endometrialBR <- update(endometrialML, method = "brglmFit",
-#'                         type = "AS_mean")
+#' endometrialBR_mean <- update(endometrialML, method = "brglmFit",
+#'                              type = "AS_mean")
 #' endometrialBC <- update(endometrialML, method = "brglmFit",
 #'                         type = "correction")
+#' endometrialBR_median <- update(endometrialML, method = "brglmFit",
+#'                                type = "AS_median")
 #' summary(endometrialML)
 #' summary(endometrialBC)
-#' summary(endometrialBR)
+#' summary(endometrialBR_mean)
+#' summary(endometrialBR_median)
 #'
 #' @export
 brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NULL,
@@ -194,6 +241,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
             out$d1mus <- d1mus
             out$d2mus <- d2mus
             out$varmus <- varmus
+            out$d1varmus <- d1variance(mus)
             out$working_weights <- working_weights
             if (qr) out$qr_decomposition <- qr(wx)
             out
@@ -249,7 +297,8 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
             if (level == 0) {
                 R_matrix <- qr.R(qr_decomposition)
                 if (inverse) {
-                    return(dispersion * tcrossprod(solve(R_matrix)))
+                    ## return(dispersion * tcrossprod(solve(R_matrix)))
+                    return(dispersion * chol2inv(R_matrix))
                 }
                 else {
                     return(precision * crossprod(R_matrix))
@@ -277,6 +326,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         })
     }
 
+    ## FIXME: Redundant function for now
     refit <- function(y, betas_start = NULL) {
         ## Estimate Beta
         betas <- coef(glm.fit(x = x, y = y, weights = weights,
@@ -321,16 +371,15 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         list(dispersion = disp, dispersion_ML = dispML)
     }
 
-    ASmean_adjustment <- function(pars, level = 0, fit = NULL) {
+    AS_mean_adjustment <- function(pars, level = 0, fit = NULL) {
         if (is.null(fit)) {
             fit <- key_quantities(pars, y = y, level = level, qr = TRUE)
         }
         with(fit, {
             if (level == 0) {
                 hatvalues <- hat_values(pars, fit = fit)
-                ## User only observations with keep = TRUE to ensure that no division with zero takes place
+                ## Use only observations with keep = TRUE to ensure that no division with zero takes place
                 return(.colSums(0.5 * hatvalues * d2mus/d1mus * x, nobs, nvars, TRUE))
-                ## return(colSums(0.5 * hatvalues * d2mus/d1mus * x))
             }
             if (level == 1) {
                 s1 <- sum(weights^3 * d3afuns, na.rm = TRUE)
@@ -340,18 +389,90 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         })
     }
 
-    customTransformation <- is.list(control$transformation) & length(control$transformation == 2)
+    ## Implementation by Euloge Clovis Kenne Pagui, 20 April 2017 (kept here for testing)
+    ## AS_median_adjustment <- function(pars, level = 0, fit = NULL) {
+    ##     if (is.null(fit)) {
+    ##         fit <- key_quantities(pars, y = y, level = level, qr = TRUE)
+    ##     }
+    ##     with(fit, {
+    ##         if (level == 0) {
+    ##             R_matrix <- qr.R(qr_decomposition)
+    ##             info <- precision * crossprod(R_matrix)
+    ##             inverse_info <- try(dispersion * tcrossprod(solve(R_matrix)))
+    ##             nu_r_s_t <- nu_r_st <- array(0,c(nvars,nvars,nvars))
+    ##             k1 <- k2 <- k3 <- b.beta <- rep(NA,nvars)
+    ##             for (r in 1:nvars)
+    ##             {
+    ##               nu_r_s_t[r,,] <- t(x)%*%((working_weights*d1mus*d1varmus*x[,r]/varmus)*x)
+    ##               nu_r_st[r,,] <- -t(x)%*%((working_weights*d1mus*(d1varmus/varmus-d2mus/d1mus^2)*x[,r])*x)
+    ##             }
+    ##             k2 <- 1/diag(inverse_info)
+    ##             for (r in 1:nvars)
+    ##             {
+    ##               sum_s1 <- rep(0,nvars)
+    ##               sum_s3 <- rep(0,nvars)
+    ##               nu.tu <- inverse_info-outer(inverse_info[,r]*k2[r],inverse_info[,r])
+    ##               for (s in 1:nvars){
+    ##                 sum_s1[s] <- sum(diag(nu.tu%*%(nu_r_s_t[s,,]+nu_r_st[s,,])))
+    ##                 sum_s3[s] <- sum((inverse_info[r,]%*%nu_r_s_t[s,,])*inverse_info[r,])
+    ##               }
+    ##               barb1r <- sum(sum_s1*inverse_info[r,])
+    ##               barb2r <- k2[r]*sum(sum_s3*inverse_info[r,])
+    ##               b.beta[r]<- barb1r/2+barb2r/6
+    ##             }
+    ##             return(info%*%b.beta)
+    ##         }
+    ##         if (level == 1) {
+    ##               s1 <- sum(weights^3 * d3afuns, na.rm = TRUE)
+    ##               s2 <- sum(weights^2 * d2afuns, na.rm = TRUE)
+    ##               return(nvars/(2*dispersion) + s1/(6*dispersion^2*s2))
+    ##         }
+    ##     })
+    ## }
+
+    ## Implementation by Ioannis Kosmidis, 02 May 2017
+    AS_median_adjustment <- function(pars, level = 0, fit = NULL) {
+        if (is.null(fit)) {
+            fit <- key_quantities(pars, y = y, level = level, qr = TRUE)
+        }
+        with(fit, {
+            if (level == 0) {
+                hatvalues <- hat_values(pars, fit = fit)
+                R_matrix <- qr.R(qr_decomposition)
+                info_unscaled <- crossprod(R_matrix)
+                inverse_info_unscaled <- chol2inv(R_matrix)
+                ## FIXME: There is 1) definitely a better way to do this, 2) no time...
+                b_vector <- numeric(nvars)
+                for (j in seq.int(nvars)) {
+                    inverse_info_unscaled_j <- inverse_info_unscaled[j, ]
+                    vcov_j <- tcrossprod(inverse_info_unscaled_j) / inverse_info_unscaled_j[j]
+                    hats_j <- .rowSums((x %*% vcov_j) * x, nobs, nvars, TRUE) * working_weights
+                    b_vector[j] <- inverse_info_unscaled_j %*% .colSums(x * (hats_j * (d1mus * d1varmus / (6 * varmus) - 0.5 * d2mus/d1mus)), nobs, nvars, TRUE)
+                }
+                return(.colSums(0.5 * hatvalues * d2mus / d1mus * x, nobs, nvars, TRUE) +
+                       info_unscaled %*% b_vector)
+            }
+            if (level == 1) {
+                s1 <- sum(weights^3 * d3afuns, na.rm = TRUE)
+                s2 <- sum(weights^2 * d2afuns, na.rm = TRUE)
+                return(nvars/(2 * dispersion) + s1/(6 * dispersion^2 * s2))
+            }
+        })
+    }
+
+    customTransformation <- is.list(control$transformation) & length(control$transformation) == 2
     if (customTransformation) {
         transformation0 <- control$transformation
     }
+
     control <- do.call("brglmControl", control)
 
     ## FIXME: Add IBLA
     adjustment_function <- switch(control$type,
-                            "correction" = ASmean_adjustment,
-                            "AS_mean" = ASmean_adjustment,
+                            "correction" = AS_mean_adjustment,
+                            "AS_mean" = AS_mean_adjustment,
+                            "AS_median" = AS_median_adjustment,
                             "ML" = function(pars, ...) 0)
-
 
     ## compute_step_components does everything on the scale of the /transformed/ dispersion
     compute_step_components <- function(pars, level = 0, fit = NULL) {
@@ -376,7 +497,8 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
                 grad <-  gradient(theta, fit = fit, level = 1)/d1zeta
                 inverse_info <- 1/information(theta, inverse = FALSE, fit = fit, level = 1) * d1zeta^2
                 failed_inversion <- !is.finite(inverse_info)
-                adjustment <- adjustment_function(theta, fit = fit, level = 1)/d1zeta - if (is_ML) 0 else 0.5 * d2zeta / d1zeta^2
+                ## adjustment <- adjustment_function(theta, fit = fit, level = 1)/d1zeta - if (is_ML | is_AS_median) 0 else 0.5 * d2zeta / d1zeta^2
+                adjustment <- adjustment_function(theta, fit = fit, level = 1)/d1zeta - 0.5 * d2zeta / d1zeta^2
                 failed_adjustment <- is.na(adjustment)
             }
         }
@@ -391,8 +513,20 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
 
     ## Some useful quantities
     is_ML <- control$type == "ML"
+    is_AS_median <- control$type == "AS_median"
     is_correction <- control$type == "correction"
     no_dispersion <- family$family %in% c("poisson", "binomial")
+
+
+    if (is_AS_median) {
+        transformation1 <- control$transformation
+        Trans1 <- control$Trans
+        inverseTrans1 <- control$inverseTrans
+        control$transformation <- "identity"
+        control$Trans <- expression(dispersion)
+        control$inverseTrans <- expression(transformed_dispersion)
+    }
+
 
     ## If fixed_totals is specified the compute row_totals
     if (is.null(fixed_totals)) {
@@ -421,17 +555,18 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
     if (is.null(weights)) {
         weights <- rep.int(1, nobs)
     }
-    if (missingOffset <- is.null(offset)) {
+    if (missing_offset <- is.null(offset)) {
         offset <- rep.int(0, nobs)
     }
 
     ## Enrich the family object with the required derivatives
     linkglm <- make.link(family$link)
-    family <- enrichwith::enrich(family, with = "function a derivatives")
+    family <- enrichwith::enrich(family, with = c("d1afun", "d2afun", "d3afun", "d1variance"))
     linkglm <- enrichwith::enrich(linkglm, with = "d2mu.deta")
 
     ## Extract functions from the enriched family object
     variance <- family$variance
+    d1variance <- family$d1variance
     linkinv <- linkglm$linkinv
     linkfun <- linkglm$linkfun
     if (!is.function(variance) || !is.function(linkinv))
@@ -447,6 +582,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
     simulate <- family$simulate
     d1_transformed_dispersion <- DD(control$Trans, "dispersion", order = 1)
     d2_transformed_dispersion <- DD(control$Trans, "dispersion", order = 2)
+
 
     ## Check for invalid etas and mus
     valid_eta <- unless_null(family$valideta, function(eta) TRUE)
@@ -618,7 +754,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         }
 
         ## Main iterations
-
+        slowit <- control$slowit
         if (control$maxit == 0) {
             iter <- 0
             failed <- FALSE
@@ -633,7 +769,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
                     step_beta_previous <- step_beta
                     step_zeta_previous <- step_zeta
                     ## Update betas
-                    betas <- betas + 2^(-step_factor) * step_beta
+                    betas <- betas + slowit * 2^(-step_factor) * step_beta
                     ## Update zetas
                     if (!no_dispersion & df_residual > 0) {
                         transformed_dispersion <- eval(control$Trans)
@@ -693,7 +829,6 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
                         trace_iteration()
                     }
                 }
-
                 failed <- failed_adjustment_beta | failed_inversion_beta | failed_adjustment_zeta | failed_inversion_zeta
                 if (failed | sum(abs(c(step_beta, step_zeta)), na.rm = TRUE) < control$epsilon) {
                     break
@@ -742,9 +877,21 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         working_weights <- quantities$working_weights
 
         ## Fisher information for the transformed dispersion
-        d1zeta <- eval(d1_transformed_dispersion)
+        ## d1zeta <- eval(d1_transformed_dispersion)
+
         if (!no_dispersion) {
             info_transformed_dispersion <- 1/step_components_zeta$inverse_info
+            if (is_AS_median) {
+                transformed_dispersion <- eval(Trans1)
+                d1zeta <- eval(DD(Trans1, "dispersion", order = 1))
+                adjusted_grad_all["Transformed dispersion"] <- adjusted_grad_all["Transformed dispersion"] / d1zeta
+                info_transformed_dispersion <- info_transformed_dispersion / d1zeta^2
+            }
+        }
+        if (is_AS_median) {
+            control$transformation <- transformation1
+            control$trans <- Trans1
+            control$inverseTrans <- inverseTrans1
         }
 
         eps <- 10 * .Machine$double.eps
@@ -796,7 +943,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
     if (customTransformation) {
         control0$transformation <- transformation0
     }
-    if (intercept & missingOffset) {
+    if (intercept & missing_offset) {
         nullFit <- brglmFit(x = x[, "(Intercept)"], y = y, weights = weights,
                             offset = rep(0, nobs), family = family, intercept = TRUE,
                             control = control0[c("epsilon", "maxit", "type", "transformation", "slowit")])
@@ -814,7 +961,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
     ## If there is an intercept and an offset then, for calculating
     ## the null deviance glm will make a call to the fitter to fit the
     ## glm with intercept and the offset
-    if (intercept & !missingOffset) {
+    if (intercept & !missing_offset) {
         nullmus <- mus
         ## doen't really matter what nullmus is set to. glm will make
         ## a new call to brglmFit and use the deviance from that call

@@ -1,5 +1,23 @@
-#' A simple check of whether the maximum likelihood estimates are infinite
+# Copyright (C) 2016, 2017 Ioannis Kosmidis
+
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 or 3 of the License
+#  (at your option).
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  A copy of the GNU General Public License is available at
+#  http://www.r-project.org/Licenses/
+
+
+#' A simple diagnostic of whether the maximum likelihood estimates are
+#' infinite
 #'
+#' @aliases checkInfiniteEstimates
 #'
 #' @param object the result of a \code{\link{glm}} call
 #' @param nsteps starting from \code{maxit = 1}, the GLM is refitted
@@ -10,7 +28,7 @@
 #'
 #' @details
 #'
-#' \code{detect_infinite_estimates} attempts to identify the occurence
+#' \code{check_infinite_estimates} attempts to identify the occurence
 #' of infinite estimates in GLMs with binomial responses by
 #' successively refitting the model. At each iteration the maximum
 #' number of allowed IWLS iterations is fixed starting from 1 to
@@ -41,16 +59,16 @@
 #'                      family = binomial("probit"))
 #' ## clearly the maximum likelihood estimate for the coefficient of
 #' ## NV is infinite
-#' detect_infinite_estimates(endometrialML)
+#' check_infinite_estimates(endometrialML)
 #'
 #' @export
-detect_infinite_estimates.glm <- function (object, nsteps = 30, ...)
+check_infinite_estimates.glm <- function (object, nsteps = 30, ...)
 {
     if (class(object)[1] != "glm") {
-        warning("detect_infinite_estimates has been designed for objects of class 'glm'")
+        warning("ceheck_infinite_estimates has been designed for objects of class 'glm'")
     }
     if (object$family$family != "binomial") {
-        warning("detect_infinite_estimates has been designed for binomial-response models")
+        warning("check_infinite_estimates has been designed for binomial-response models")
     }
     eps <- .Machine$double.eps
     betasNames <- names(betas <- coef(object))

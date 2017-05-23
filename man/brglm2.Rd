@@ -7,12 +7,14 @@
 \title{brglm2: Bias Reduction in Generalized Linear Models}
 \description{
 Estimation and inference from generalized linear models based on
-implicit methods for bias reduction (see Kosmidis, 2014). brglm can
-achieve reduction of estimation bias either through the adjusted
-score equations approach in Firth (1993) and Kosmidis and Firth
-(2009), or through the direct subtraction of an estimate of the
-bias of the maximum likelihood estimator from the maximum
-likelihood estimates as in Cordeiro and McCullagh (1991).
+implicit methods for bias reduction (see Kosmidis, 2014). brglm2
+can achieve reduction of estimation bias by solving either the
+mean-bias reducing adjusted score equations in Firth (1993) and
+Kosmidis and Firth (2009), or the median-bias reducing adjusted
+score equations in Kenne et al. (2016), or through the direct
+subtraction of an estimate of the bias of the maximum likelihood
+estimator from the maximum likelihood estimates as in Cordeiro and
+McCullagh (1991),
 }
 \details{
 In the special case of generalized linear models for binomial and
@@ -20,9 +22,13 @@ multinomial responses, the adjusted score equations approach
 returns estimates with improved frequentist properties, that are
 also always finite, even in cases where the maximum likelihood
 estimates are infinite (e.g. complete and quasi-complete
-separation). Estimation in all cases takes place via a modified
-Fisher scoring algorithm, and S3 methods for the construction of
-confidence intervals for the reduced-bias estimates are provided.
+separation; see also `?detect_separation` and
+`?check_infinite_estimates` for pre-fit and post-fit methods for
+the detection of infinite estimates in binomial response
+generalized linear models). Estimation in all cases takes place
+via a modified Fisher scoring algorithm, and S3 methods for the
+construction of confidence intervals for the reduced-bias estimates
+are provided.
 
 
 
@@ -35,9 +41,6 @@ and maintenance of the two packages will continue, until **brglm2**
 incorporates all **brglm** functionality and gets an appropriate
 wrapper to the \code{brglm::brglm} function.
 }
-\author{
-Ioannis Kosmidis \email{i.kosmidis@ucl.ac.uk}
-}
 \references{
 Cordeiro G. M. & McCullagh, P. (1991). Bias correction in generalized
 linear models. *Journal of the Royal Statistical Society. Series B
@@ -45,6 +48,10 @@ linear models. *Journal of the Royal Statistical Society. Series B
 
 Firth D. (1993). Bias reduction of maximum likelihood estimates,
 Biometrika, **80**, 27-38
+
+Kenne Pagui E C, Salvan A and Sartori N (2016). Median bias
+reduction of maximum likelihood estimates. *arXiv*,
+**arXiv:1604.04768**
 
 Kosmidis I and Firth D (2009). Bias reduction in exponential family
 nonlinear models. *Biometrika*, **96**, 793-804
@@ -57,4 +64,6 @@ Kosmidis I (2014). Bias in parametric estimation: reduction and
 useful side-effects. *WIRE Computational Statistics*, **6**,
 185-196
 }
-
+\author{
+Ioannis Kosmidis \email{i.kosmidis@ucl.ac.uk}
+}

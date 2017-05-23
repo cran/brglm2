@@ -1,3 +1,19 @@
+# Copyright (C) 2016, 2017 Ioannis Kosmidis
+
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 or 3 of the License
+#  (at your option).
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  A copy of the GNU General Public License is available at
+#  http://www.r-project.org/Licenses/
+
+
 #' Bias reduction for multinomial response models using the
 #' Poisson trick.
 #'
@@ -41,10 +57,10 @@
 #' cases of complete or quasi-complete separation.
 #'
 #' \code{brmultinom} is a wrapper of \code{\link{brglmFit}} that fits
-#' multinomial logit regression models through the "Poisson trick" (see, for
+#' multinomial logit regression models through the 'Poisson trick' (see, for
 #' example, Palmgren, 1981; Kosmidis & Firth, 2011).
 #'
-#' The implementation relies on the construction of an "extended"
+#' The implementation relies on the construction of an 'extended'
 #' model matrix for the log-linear model and constraints on the sums
 #' of the Poisson means. Specifically, a log-linear model is fitted on
 #' a Kronecker product
@@ -57,7 +73,7 @@
 #'
 #' While \code{\link{brmultinom}} can be used for analyses using
 #' multinomial regression models, the current implementation is more
-#' of a "proof of concept" and is not expected to scale well with
+#' of a 'proof of concept' and is not expected to scale well with
 #' either of \code{nrow(X)}, \code{ncol(X)} or the number of levels in
 #' the cateogrical response.
 #'
@@ -87,13 +103,13 @@
 #' # Maximum likelihood using nnet::multinom
 #' houseML1nnet <- nnet::multinom(Sat ~ Infl + Type + Cont, weights = Freq,
 #'                                data = housing)
-#' # Maximum likelihood using brmultinom with baseline category "Low"
+#' # Maximum likelihood using brmultinom with baseline category 'Low'
 #' houseML1 <- brmultinom(Sat ~ Infl + Type + Cont, weights = Freq,
 #'                        data = housing, type = "ML", ref = 1)
 #' # The estimates are numerically the same as houseML0
 #' all.equal(coef(houseML1nnet), coef(houseML1), tolerance = 1e-04)
 #'
-#' # Maximum likelihood using brmultinom with "High" as baseline
+#' # Maximum likelihood using brmultinom with 'High' as baseline
 #' houseML3 <- brmultinom(Sat ~ Infl + Type + Cont, weights = Freq,
 #'                       data = housing, type = "ML", ref = 3)
 #' # The fitted values are the same as houseML1

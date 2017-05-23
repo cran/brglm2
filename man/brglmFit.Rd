@@ -2,6 +2,7 @@
 % Please edit documentation in R/brglmFit.R
 \name{brglmFit}
 \alias{brglmFit}
+\alias{brglm_fit}
 \title{Fitting function for \code{\link{glm}} for reduced-bias
 estimation and inference}
 \usage{
@@ -63,10 +64,12 @@ argument if it is not supplied directly.}
 \code{\link{brglmFit}} is a fitting function for \code{\link{glm}}
 that fits generalized linear models using implicit and explicit
 bias reduction methods. Currently supported methods include the
-implicit adjusted scores approach in Firth (1993) and Kosmidis \&
-Firth (2009), the correction of the asymptotic bias in Cordeiro &
-McCullagh (1991), and maximum likelihood.  Estimation is performed
-using a quasi Fisher scoring iteration based on the iterative
+mean bias-reducing adjusted scores approach in Firth (1993) and
+Kosmidis \& Firth (2009), the median bias-reduction adjusted scores
+approach in Kenne et al. (2016), the correction of the asymptotic
+bias in Cordeiro & McCullagh (1991), and maximum likelihood.
+Estimation is performed using a quasi Fisher scoring iteration,
+which in the case of mean-bias reduction resembles an iterative
 correction of the asymptotic bias of the Fisher scoring iterates.
 }
 \details{
@@ -74,9 +77,12 @@ Implicit and explicit bias reduction methods are described in
 detail in Kosmidis (2014). The quasi (or modified) Fisher scoring
 iteration is described in Kosmidis (2010) and is based on the
 iterative correction of the asymptotic bias of the Fisher scoring
-iterates. A quick description of the quasi Fisher scoring iteration
-is also given in one of the vignettes of the *enrichwith* R package
-(see,
+iterates. A mathematical description of the supported adjustments
+and the quasi Fisher scoring iteration is provided in the iteration
+vignette (see,
+\url{https://cran.r-project.org/package=brglm2/vignettes/iteration.pdf}).
+A quick description of the quasi Fisher scoring iteration is also
+given in one of the vignettes of the *enrichwith* R package (see,
 \url{https://cran.r-project.org/package=enrichwith/vignettes/bias.html}).
 
 
@@ -90,20 +96,27 @@ supplying fitting methods to \code{\link{glm}}.
 
 \code{fixed_totals} can be used to constrain the means of a poisson
 model to add up to the corresponding observed counts according to
+
+\code{brglm_fit} is an alias to \code{brglmFit}.
 }
 \examples{
 ## The lizards example from ?brglm::brglm
 data("lizards")
 # Fit the model using maximum likelihood
 lizardsML <- glm(cbind(grahami, opalinus) ~ height + diameter +
-                     light + time, family = binomial(logit), data = lizards,
+                 light + time, family = binomial(logit), data = lizards,
                  method = "glm.fit")
-# Now the bias-reduced fit:
-lizardsBR <- glm(cbind(grahami, opalinus) ~ height + diameter +
-                     light + time, family = binomial(logit), data = lizards,
-                 method = "brglmFit")
+# Mean bias-reduced fit:
+lizardsBR_mean <- glm(cbind(grahami, opalinus) ~ height + diameter +
+                      light + time, family = binomial(logit), data = lizards,
+                      method = "brglmFit")
+# Median bias-reduced fit:
+lizardsBR_median <- glm(cbind(grahami, opalinus) ~ height + diameter +
+                        light + time, family = binomial(logit), data = lizards,
+                        method = "brglmFit", type = "AS_median")
 summary(lizardsML)
-summary(lizardsBR)
+summary(lizardsBR_median)
+summary(lizardsBR_mean)
 
 
 ## Another example from
@@ -115,10 +128,12 @@ summary(lizardsBR)
 data("coalition", package = "brglm2")
 # The maximum likelihood fit with log link
 coalitionML <- glm(duration ~ fract + numst2, family = Gamma, data = coalition)
-# The bias-reduced fit
-coalitionBR <- update(coalitionML, method = "brglmFit")
+# The mean bias-reduced fit
+coalitionBR_mean <- update(coalitionML, method = "brglmFit")
 # The bias-corrected fit
 coalitionBC <- update(coalitionML, method = "brglmFit", type = "correction")
+# The median bias-corrected fit
+coalitionBR_median <- update(coalitionML, method = "brglmFit", type = "AS_median")
 }
 
 \dontrun{
@@ -127,34 +142,42 @@ data("anorexia", package = "MASS")
 
 anorexML <- glm(Postwt ~ Prewt + Treat + offset(Prewt),
                 family = gaussian, data = anorexia)
-anorexBR <- update(anorexML, method = "brglmFit")
 anorexBC <- update(anorexML, method = "brglmFit", type = "correction")
+anorexBR_mean <- update(anorexML, method = "brglmFit")
+anorexBR_median <- update(anorexML, method = "brglmFit", type = "AS_median")
 
-## The outputs are identical, because the maximum likelihood
-## estimators of the regression parameters are unbiased when family
-## is Gaussian, and the bias-reduced estimator of the dispersion is
-## the unbiased, by degree of freedom adjustment, estimator of the
-## residual variance.
+## All methods return the same estimates for the regression
+## parameters because the maximum likelihood estimator is normally
+## distributed around the `true` value under the model (hence, both
+## mean and component-wise median unbiased). The Wald tests for
+## anorexBC and anorexBR_mean differ from anorexML
+## because the bias-reduced estimator of the dispersion is the
+## unbiased, by degree of freedom adjustment (divide by n - p),
+## estimator of the residual variance. The Wald tests from
+## anorexBR_median are based on the median bias-reduced estimator
+## of the dispersion that results from a different adjustment of the
+## degrees of freedom (divide by n - p - 2/3)
 summary(anorexML)
-summary(anorexBR)
 summary(anorexBC)
+summary(anorexBR_mean)
+summary(anorexBR_median)
 }
 
 ## endometrial data from Heinze \\& Schemper (2002) (see ?endometrial)
 data("endometrial", package = "brglm2")
 endometrialML <- glm(HG ~ NV + PI + EH, data = endometrial,
                      family = binomial("probit"))
-endometrialBR <- update(endometrialML, method = "brglmFit",
-                        type = "AS_mean")
+endometrialBR_mean <- update(endometrialML, method = "brglmFit",
+                             type = "AS_mean")
 endometrialBC <- update(endometrialML, method = "brglmFit",
                         type = "correction")
+endometrialBR_median <- update(endometrialML, method = "brglmFit",
+                               type = "AS_median")
 summary(endometrialML)
 summary(endometrialBC)
-summary(endometrialBR)
+summary(endometrialBR_mean)
+summary(endometrialBR_median)
 
-}
-\author{
-Ioannis Kosmidis \email{i.kosmidis@ucl.ac.uk}
 }
 \references{
 Cordeiro G. M. & McCullagh, P. (1991). Bias correction in generalized
@@ -163,6 +186,10 @@ linear models. *Journal of the Royal Statistical Society. Series B
 
 Firth D. (1993). Bias reduction of maximum likelihood estimates,
 Biometrika, **80**, 27-38
+
+Kenne Pagui E C, Salvan A and Sartori N (2016). Median bias
+reduction of maximum likelihood estimates. *arXiv*,
+**arXiv:1604.04768**
 
 Kosmidis I and Firth D (2009). Bias reduction in exponential family
 nonlinear models. *Biometrika*, **96**, 793-804
@@ -178,4 +205,6 @@ useful side-effects. *WIRE Computational Statistics*, **6**,
 \seealso{
 \code{\link{glm.fit}} and \code{\link{glm}}
 }
-
+\author{
+Ioannis Kosmidis [aut, cre] \email{i.kosmidis@ucl.ac.uk}, Euloge Clovis Kenne Pagui [ctb] \email{kenne@stat.unipd.it}
+}

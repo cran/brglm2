@@ -2,12 +2,13 @@
 % Please edit documentation in R/brglmControl.R
 \name{brglmControl}
 \alias{brglmControl}
+\alias{brglm_control}
 \title{Auxiliary function for \code{\link{glm}} fitting using the
 \code{\link{brglmFit}} method.}
 \usage{
 brglmControl(epsilon = 1e-10, maxit = 100, trace = FALSE,
-  type = c("AS_mean", "correction", "ML"), transformation = "identity",
-  slowit = 1, max_step_factor = 12)
+  type = c("AS_mean", "AS_median", "correction", "ML"),
+  transformation = "identity", slowit = 1, max_step_factor = 12)
 }
 \arguments{
 \item{epsilon}{positive convergence tolerance epsilon}
@@ -19,9 +20,10 @@ allowed}
 each iteration}
 
 \item{type}{the type of fitting methodo to be used. The options are
-\code{AS-mean} (mean-bias reducing adjusted scores; default),
-\code{correction} (asymptotic bias correction) and
-\code{ML} (maximum likelihood).}
+\code{AS_mean} (mean-bias reducing adjusted scores; default),
+\code{AS_median} (median-bias reducting adjusted scores),
+\code{correction} (asymptotic bias correction) and \code{ML}
+(maximum likelihood).}
 
 \item{transformation}{the transformation of the dispersion to be
 estimated. Default is \code{identity}. See Details.}
@@ -57,6 +59,8 @@ be used to construct a \code{control} argument.
      and "inverseSqrt". Custom transformations are accommodated by
      supplying a list of two expressions (transformation and
      inverse transformation). See the examples for more details.
+
+\code{brglm_control} is an alias to \code{brglmControl}.
 }
 \examples{
 
@@ -79,10 +83,9 @@ coalitionBRc <- update(coalitionML, method = "brglmFit",
 coef(coalitionBRc, model = "dispersion")
 
 }
-\author{
-Ioannis Kosmidis \email{i.kosmidis@ucl.ac.uk}
-}
 \seealso{
 \code{\link{brglmFit}} and \code{\link{glm.fit}}
 }
-
+\author{
+Ioannis Kosmidis \email{i.kosmidis@ucl.ac.uk}
+}

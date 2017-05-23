@@ -1,21 +1,28 @@
 #' brglm2: Bias Reduction in Generalized Linear Models
 #'
 #' Estimation and inference from generalized linear models based on
-#' implicit methods for bias reduction (see Kosmidis, 2014). brglm can
-#' achieve reduction of estimation bias either through the adjusted
-#' score equations approach in Firth (1993) and Kosmidis and Firth
-#' (2009), or through the direct subtraction of an estimate of the
-#' bias of the maximum likelihood estimator from the maximum
-#' likelihood estimates as in Cordeiro and McCullagh (1991).
+#' implicit methods for bias reduction (see Kosmidis, 2014). brglm2
+#' can achieve reduction of estimation bias by solving either the
+#' mean-bias reducing adjusted score equations in Firth (1993) and
+#' Kosmidis and Firth (2009), or the median-bias reducing adjusted
+#' score equations in Kenne et al. (2016), or through the direct
+#' subtraction of an estimate of the bias of the maximum likelihood
+#' estimator from the maximum likelihood estimates as in Cordeiro and
+#' McCullagh (1991),
+#'
 #'
 #' In the special case of generalized linear models for binomial and
 #' multinomial responses, the adjusted score equations approach
 #' returns estimates with improved frequentist properties, that are
 #' also always finite, even in cases where the maximum likelihood
 #' estimates are infinite (e.g. complete and quasi-complete
-#' separation). Estimation in all cases takes place via a modified
-#' Fisher scoring algorithm, and S3 methods for the construction of
-#' confidence intervals for the reduced-bias estimates are provided.
+#' separation; see also `?detect_separation` and
+#' `?check_infinite_estimates` for pre-fit and post-fit methods for
+#' the detection of infinite estimates in binomial response
+#' generalized linear models). Estimation in all cases takes place
+#' via a modified Fisher scoring algorithm, and S3 methods for the
+#' construction of confidence intervals for the reduced-bias estimates
+#' are provided.
 #'
 #' @details
 #'
@@ -38,6 +45,10 @@
 #'
 #' Firth D. (1993). Bias reduction of maximum likelihood estimates,
 #' Biometrika, **80**, 27-38
+#'
+#' Kenne Pagui E C, Salvan A and Sartori N (2016). Median bias
+#' reduction of maximum likelihood estimates. *arXiv*,
+#' **arXiv:1604.04768**
 #'
 #' Kosmidis I and Firth D (2009). Bias reduction in exponential family
 #' nonlinear models. *Biometrika*, **96**, 793-804
@@ -67,11 +78,11 @@ NULL
 ## of n which is evaluated by family$initialize
 if (getRversion() >= "2.15.1") globalVariables(c("n", "lambda"))
 
-#' Generic method for detecting infinite estimates
+#' Generic method for checking for infinite estimates
 #' @param object a fitted model object (e.g. the result of a
 #'     \code{\link{glm}} call)
 #' @param ... other options to be passed to the method
 #' @export
-detect_infinite_estimates <- function(object, ...) {
-    UseMethod("detect_infinite_estimates")
+check_infinite_estimates <- function(object, ...) {
+    UseMethod("check_infinite_estimates")
 }
