@@ -30,6 +30,7 @@
 #' @param type the type of fitting methodo to be used. The options are
 #'     \code{AS_mean} (mean-bias reducing adjusted scores; default),
 #'     \code{AS_median} (median-bias reducting adjusted scores),
+#'     \code{AS_median} (bias reduction using mixed score adjustents),
 #'     \code{correction} (asymptotic bias correction) and \code{ML}
 #'     (maximum likelihood).
 #' @param transformation the transformation of the dispersion to be
@@ -72,23 +73,24 @@
 #' coalitionML <- glm(duration ~ fract + numst2, family = Gamma, data = coalition)
 #'
 #' ## Bias reduced estimation of the dispersion parameter
-#' coalitionBRi <- update(coalitionML, method = "brglmFit")
+#' coalitionBRi <- glm(duration ~ fract + numst2, family = Gamma, data = coalition,
+#'                     method = "brglmFit")
 #' coef(coalitionBRi, model = "dispersion")
 #'
 #' ## Bias reduced estimation of log(dispersion)
-#' coalitionBRl <- update(coalitionML, method = "brglmFit",  transformation = "log")
+#' coalitionBRl <- glm(duration ~ fract + numst2, family = Gamma, data = coalition,
+#'                     method = "brglmFit", transformation = "log")
 #' coef(coalitionBRl, model = "dispersion")
 #'
 #' ## Just for illustration: Bias reduced estimation of dispersion^0.25
 #' my_transformation <- list(expression(dispersion^0.25), expression(transformed_dispersion^4))
-#' coalitionBRc <- update(coalitionML, method = "brglmFit",
-#'                        transformation = my_transformation)
+#' coalitionBRc <- update(coalitionBRi, transformation = my_transformation)
 #' coef(coalitionBRc, model = "dispersion")
 #'
 #' @export
-brglmControl <- function(epsilon = 1e-10, maxit = 100,
+brglmControl <- function(epsilon = 1e-08, maxit = 100,
                          trace = FALSE,
-                         type = c("AS_mean", "AS_median", "correction", "ML"),
+                         type = c("AS_mean", "AS_median", "AS_mixed", "correction", "ML"),
                          transformation = "identity",
                          slowit = 1,
                          max_step_factor = 12) {

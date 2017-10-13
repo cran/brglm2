@@ -7,8 +7,12 @@ bibliography: brglm2.bib
 vignette: >
   %\VignetteIndexEntry{Bias reduction in generalized linear models}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = T, comment = "#")
+```
 
 # The **brglm2** package
 
@@ -70,7 +74,7 @@ Suppressing the dependence of the various quantities on the model parameters and
     s_\beta & = \frac{1}{\phi}X^TWD^{-1}(y - \mu) \\
 	s_\phi & = \frac{1}{2\phi^2}\sum_{i = 1}^n (q_i - \rho_i)
 \end{align*}
-with $y = (y_1, \ldots, y_n)^\top$, $\mu = (\mu_1, \ldots, \mu_n)^\top$, $W = {\rm diag}\left\{w_1, \ldots, w_n\right\}$ and $D = {\rm diag}\left\{d_1, \ldots, d_n\right\}$, where $w_i = m_i d_i^2/v_i$ is the $i$th working weight, with  $d_i = d\mu_i/d\eta_i$ and $v_i = V(\mu_i)$. Furthermore, $q_i = -2 m_i \{y_i\theta_i - b(\theta_i) - c_1(y_i)\}$ and $\rho_i = m_i a'_1$ are the $i$th deviance residual (e.g. as is implemented in the `dev.resids` component of most `family` objects) and its expectation, respectively, with $a'_i = a'(-m_i/\phi)$. The only `family` object deviating from the above description is `Gamma` where `Gamma()$dev.resids` implements $q_i - 2m_i$ instead of $q_i$. For convenience in implementation, and just for Gamma we define $\rho_i = m_i a'_1 - 2m_i = -2\psi(-m_i/\phi) + 2\log(-m_i/\phi)$, where $\psi$ is the `digamma` function. This change affects none of the estimation methods discussed in this vignette.
+with $y = (y_1, \ldots, y_n)^\top$, $\mu = (\mu_1, \ldots, \mu_n)^\top$, $W = {\rm diag}\left\{w_1, \ldots, w_n\right\}$ and $D = {\rm diag}\left\{d_1, \ldots, d_n\right\}$, where $w_i = m_i d_i^2/v_i$ is the $i$th working weight, with  $d_i = d\mu_i/d\eta_i$ and $v_i = V(\mu_i)$. Furthermore, $q_i = -2 m_i \{y_i\theta_i - b(\theta_i) - c_1(y_i)\}$ and $\rho_i = m_i a'_i$ are the $i$th deviance residual (e.g. as is implemented in the `dev.resids` component of most `family` objects) and its expectation, respectively, with $a'_i = a'(-m_i/\phi)$. The only `family` object deviating from the above description is `Gamma` where `Gamma()$dev.resids` implements $q_i - 2m_i$ instead of $q_i$. For convenience in implementation, and just for Gamma we define $\rho_i = m_i a'_1 - 2m_i = -2\psi(-m_i/\phi) + 2\log(-m_i/\phi)$, where $\psi$ is the `digamma` function. This change affects none of the estimation methods discussed in this vignette.
 
 The expected information matrix about $\beta$ and $\phi$ is
 $$
@@ -98,7 +102,7 @@ The maximum likelihood estimators $\hat\beta$ and $\hat\phi$ of $\beta$ and $\ph
 
 ### Mean bias-reducing adjusted score functions
 
-Let $A_\beta = -i_\beta b_\beta$ and $A_\phi = -i_\phi b_\phi$, where $b_\beta$ and $b_\phi$ are the first terms in the expansion of the mean bias of the maximum likelihood estimator of the regression parameters $\beta$ and dispersion $\phi$, respectively. The results in @firth:93 can be used to show that the solution of the adjusted score equations
+Let $A_\beta = -i_{\beta\beta} b_\beta$ and $A_\phi = -i_{\phi\phi} b_\phi$, where $b_\beta$ and $b_\phi$ are the first terms in the expansion of the mean bias of the maximum likelihood estimator of the regression parameters $\beta$ and dispersion $\phi$, respectively. The results in @firth:93 can be used to show that the solution of the adjusted score equations
 \begin{align*}
 s_\beta + A_\beta & = 0_p \\
 s_\phi + A_\phi & = 0
@@ -257,5 +261,11 @@ where $[A]_j$ denotes the $j$th row of matrix $A$ as a column vector, $v'_i = V'
 # Contributions to this vignette
 
 The first version of the vignette has been written by Ioannis Kosmidis. Eugene Clovis Kenne Pagui and Nicola Sartori contributed the first version of the section "Median bias-reducing adjusted score functions", and Ioannis Kosmidis brought the expressions for the median bias-reducing adjustments in the reduced form that is shown above and is implemented in `brglmFit`.
+
+# Citation
+If you found this vignette or **brglm2** in general useful, please consider citing **brglm2** using
+```{r, echo = TRUE}
+citation("brglm2")
+```
 
 # References

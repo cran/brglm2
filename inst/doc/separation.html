@@ -12,6 +12,7 @@
 
 <meta name="author" content="Ioannis Kosmidis" />
 
+<meta name="date" content="2017-05-16" />
 
 <title>Detecting separation and infinite estimates in binomial response GLMs</title>
 
@@ -69,6 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Detecting separation and infinite estimates in binomial response GLMs</h1>
 <h4 class="author"><em><a href="http://www.ucl.ac.uk/~ucakiko/">Ioannis Kosmidis</a></em></h4>
+<h4 class="date"><em>16 May 2017</em></h4>
 
 
 
@@ -79,7 +81,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="checking-for-infinite-estimates" class="section level1">
 <h1>Checking for infinite estimates</h1>
-<p><span class="citation">Heinze and Schemper (2002)</span> used a logistic regression model to analyse data from a study on endometrial cancer. <span class="citation">Agresti (2015 Section 5.7)</span> provide details on the data set. Below, we fit a probit regression model with the same linear predictor as the logistic regression model in <span class="citation">Heinze and Schemper (2002)</span>.</p>
+<p><span class="citation">Heinze and Schemper (2002)</span> used a logistic regression model to analyse data from a study on endometrial cancer. <span class="citation">Agresti (2015, Section 5.7)</span> provide details on the data set. Below, we fit a probit regression model with the same linear predictor as the logistic regression model in <span class="citation">Heinze and Schemper (2002)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;brglm2&quot;</span>)
 <span class="kw">data</span>(<span class="st">&quot;endometrial&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;brglm2&quot;</span>)
 modML &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;probit&quot;</span>), <span class="dt">data =</span> endometrial)
@@ -111,39 +113,29 @@ theta_mle &lt;-<span class="st"> </span><span class="kw">coef</span>(modML)
 ## 
 ## Number of Fisher Scoring iterations: 17</code></pre>
 <p>As is the case for the logistic regression in <span class="citation">Heinze and Schemper (2002)</span>, the maximum likelihood (ML) estimate of the parameter for <code>NV</code> is actually infinite. The reported, apparently finite value is merely due to false convergence of the iterative estimation procedure. The same is true for the estimated standard error, and, hence the value <code>r round(coef(summary(modML))[&quot;NV&quot;, &quot;z value&quot;], 3)</code> for the <span class="math inline">\(z\)</span>-statistic cannot be trusted for inference on the size of the effect for <code>NV</code>.</p>
-<p>‘<span class="citation">(<span class="citeproc-not-found" data-reference-id="lessafre:89"><strong>???</strong></span> Section 4)</span> describe a procedure that can hint on the occurrence of infinite estimates. In particular, the model is successively refitted, by increasing the maximum number of allowed IWLS iterations at east step. At east step the estimated asymptotic standard errors are divided to the corresponding ones from the first fit. If the sequence of ratios diverges, then the maximum likelihood estimate of the corresponding parameter is minus or plus infinity. The following code chunk applies this process to <code>modML</code>.</p>
+<p>‘<span class="citation">Lesaffre and Albert (1989, Section 4)</span> describe a procedure that can hint on the occurrence of infinite estimates. In particular, the model is successively refitted, by increasing the maximum number of allowed IWLS iterations at east step. At east step the estimated asymptotic standard errors are divided to the corresponding ones from the first fit. If the sequence of ratios diverges, then the maximum likelihood estimate of the corresponding parameter is minus or plus infinity. The following code chunk applies this process to <code>modML</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">check_infinite_estimates</span>(modML)</code></pre></div>
 <pre><code>##       (Intercept)           NV       PI       EH
 ##  [1,]    1.000000 1.000000e+00 1.000000 1.000000
-##  [2,]    1.143616 1.255159e+00 1.173164 1.269461
-##  [3,]    1.320822 1.710954e+00 1.352585 1.523591
-##  [4,]    1.393917 2.446025e+00 1.444421 1.609812
-##  [5,]    1.405618 3.614249e+00 1.471586 1.614911
-##  [6,]    1.410578 5.468665e+00 1.483265 1.617198
-##  [7,]    1.412441 8.407443e+00 1.487918 1.618007
-##  [8,]    1.413150 1.306780e+01 1.489763 1.618312
-##  [9,]    1.413410 2.047144e+01 1.490477 1.618422
-## [10,]    1.413505 3.225927e+01 1.490753 1.618462
-## [11,]    1.413540 5.107006e+01 1.490859 1.618476
-## [12,]    1.413552 8.115267e+01 1.490899 1.618482
-## [13,]    1.413557 1.293565e+02 1.490915 1.618483
-## [14,]    1.413559 2.067352e+02 1.490921 1.618484
-## [15,]    1.413559 3.311464e+02 1.490923 1.618484
-## [16,]    1.413559 5.314659e+02 1.490924 1.618484
-## [17,]    1.413560 8.544278e+02 1.490924 1.618484
-## [18,]    1.413560 1.375729e+03 1.490924 1.618484
-## [19,]    1.413560 2.218072e+03 1.490924 1.618484
-## [20,]    1.413560 3.580485e+03 1.490924 1.618484
-## [21,]    1.413560 5.786011e+03 1.490924 1.618484
-## [22,]    1.413560 9.359290e+03 1.490924 1.618484
-## [23,]    1.413560 1.515284e+04 1.490924 1.618484
-## [24,]    1.413560 2.455266e+04 1.490924 1.618484
-## [25,]    1.413560 3.981322e+04 1.490924 1.618484
-## [26,]    1.413560 6.460310e+04 1.490924 1.618484
-## [27,]    1.413560 1.048949e+05 1.490924 1.618484
-## [28,]    1.413560 1.704229e+05 1.490924 1.618484
-## [29,]    1.413560 2.770409e+05 1.490924 1.618484
-## [30,]    1.413560 4.505625e+05 1.490924 1.618484</code></pre>
+##  [2,]    1.320822 1.710954e+00 1.352585 1.523591
+##  [3,]    1.410578 5.468665e+00 1.483265 1.617198
+##  [4,]    1.413505 3.225927e+01 1.490753 1.618462
+##  [5,]    1.413559 3.311464e+02 1.490923 1.618484
+##  [6,]    1.413560 5.786011e+03 1.490924 1.618484
+##  [7,]    1.413560 1.704229e+05 1.490924 1.618484
+##  [8,]    1.413560 3.232598e+06 1.490924 1.618484
+##  [9,]    1.413560 5.402789e+06 1.490924 1.618484
+## [10,]    1.413560 9.295902e+06 1.490924 1.618484
+## [11,]    1.413560 2.290248e+07 1.490924 1.618484
+## [12,]    1.413560 3.953686e+07 1.490924 1.618484
+## [13,]    1.413560 3.953686e+07 1.490924 1.618484
+## [14,]    1.413560 3.953686e+07 1.490924 1.618484
+## [15,]    1.413560 3.953686e+07 1.490924 1.618484
+## [16,]    1.413560 3.953686e+07 1.490924 1.618484
+## [17,]    1.413560 3.953686e+07 1.490924 1.618484
+## [18,]    1.413560 3.953686e+07 1.490924 1.618484
+## [19,]    1.413560 3.953686e+07 1.490924 1.618484
+## [20,]    1.413560 3.953686e+07 1.490924 1.618484</code></pre>
 <p>Clearly, the ratios of estimated standard errors diverge for <code>NV</code>.</p>
 </div>
 <div id="detecting-separation" class="section level1">
@@ -167,6 +159,27 @@ endometrial_sep</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coef</span>(<span class="kw">summary</span>(modML))[, <span class="st">&quot;Std. Error&quot;</span>] <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(endometrial_sep<span class="op">$</span>betas)</code></pre></div>
 <pre><code>## (Intercept)          NV          PI          EH 
 ##  0.85732428         Inf  0.02359861  0.43307925</code></pre>
+</div>
+<div id="citation" class="section level1">
+<h1>Citation</h1>
+<p>If you found this vignette or <strong>brglm2</strong> in general useful, please consider citing <strong>brglm2</strong> using</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">citation</span>(<span class="st">&quot;brglm2&quot;</span>)</code></pre></div>
+<pre><code>## 
+## Kosmidis I (????). _brglm2: Bias reduction in generalized linear
+## models_. R package version 0.1.5, &lt;URL:
+## https://github.com/ikosmidis/brglm2&gt;.
+## 
+## A BibTeX entry for LaTeX users is
+## 
+##   @Manual{,
+##     title = {{brglm2}: Bias reduction in generalized linear models},
+##     author = {Ioannis Kosmidis},
+##     note = {R package version 0.1.5},
+##     url = {https://github.com/ikosmidis/brglm2},
+##   }</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
 <div id="refs" class="references">
 <div id="ref-agresti:15">
 <p>Agresti, A. 2015. <em>Foundations of Linear and Generalized Linear Models</em>. Wiley Series in Probability and Statistics. Wiley.</p>
@@ -176,6 +189,9 @@ endometrial_sep</code></pre></div>
 </div>
 <div id="ref-konis:07">
 <p>Konis, Kjell. 2007. “Linear Programming Algorithms for Detecting Separated Data in Binary Logistic Regression Models.” DPhil, University of Oxford. <a href="https://ora.ox.ac.uk/objects/uuid:8f9ee0d0-d78e-4101-9ab4-f9cbceed2a2a" class="uri">https://ora.ox.ac.uk/objects/uuid:8f9ee0d0-d78e-4101-9ab4-f9cbceed2a2a</a>.</p>
+</div>
+<div id="ref-lesaffre:89">
+<p>Lesaffre, E., and A. Albert. 1989. “Partial Separation in Logistic Discrimination.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em> 51 (1). [Royal Statistical Society, Wiley]: 109–16. <a href="http://www.jstor.org/stable/2345845" class="uri">http://www.jstor.org/stable/2345845</a>.</p>
 </div>
 </div>
 </div>
