@@ -97,7 +97,7 @@
 #'
 #' \code{brglm_fit} is an alias to \code{brglmFit}.
 #'
-#' @author Ioannis Kosmidis [aut, cre] \email{i.kosmidis@ucl.ac.uk}, Euloge Clovis Kenne Pagui [ctb] \email{kenne@stat.unipd.it}
+#' @author Ioannis Kosmidis [aut, cre] \email{ioannis.kosmidis@warwick.ac.uk}, Euloge Clovis Kenne Pagui [ctb] \email{kenne@stat.unipd.it}
 #'
 #' @seealso \code{\link{glm.fit}} and \code{\link{glm}}
 #'
@@ -269,6 +269,10 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
             ## objervations with non-zero weight
             d1afuns <- d2afuns <- d3afuns <- rep(NA_real_, nobs)
             d1afuns[keep] <- d1afun(zetas[keep])
+            ## because of the way dev.resids is implemented, this is
+            ## d1afun is the expectation of dev.resids + 2 for gamma
+            ## families, so subtract 2
+            if (family$family == "Gamma") d1afuns <- d1afuns - 2
             d2afuns[keep] <- d2afun(zetas[keep])
             d3afuns[keep] <- d3afun(zetas[keep])
             out$d2afuns <- d2afuns
