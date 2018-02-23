@@ -25,10 +25,7 @@ all_median <- update(all_ml, type = "AS_median")
 summary(all_median)
 
 ## ---- echo = TRUE, error = TRUE------------------------------------------
-all_ml_sparse <- update(all_ml, weights = round(freq/3))
-
-## ---- echo = TRUE, error = TRUE------------------------------------------
-all_ml_sparse <- update(all_ml, weights = round(freq/3), slowit = 0.3)
+all_ml_sparse <- update(all_ml, weights = round(freq/3), slowit = 0.2)
 summary(all_ml_sparse)
 
 ## ---- echo = TRUE--------------------------------------------------------

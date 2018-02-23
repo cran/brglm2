@@ -1,6 +1,6 @@
-9a48820fd899fb0616ae93e5b86baed3 *DESCRIPTION
+3ec855c9c7948d4002696c49f38e4b64 *DESCRIPTION
 7e801cf14389b46d7c56cdbf3ae1b6b2 *NAMESPACE
-cc704270f59753786239adf264a7f39e *NEWS.md
+1da1b517864665956cba0e09f83789af *NEWS.md
 e4b6c1d7079ec492c4a139f06a63c670 *R/brglm2-package.R
 970a158b7d3f6197f1fb3c5196eac3f7 *R/brglmControl.R
 8237696538b0c0075758de87314371a2 *R/brglmFit.R
@@ -17,17 +17,16 @@ f94d656e72dcaa9fd4c4f8e0838d5e4f *README.md
 928a7fd0fb91fc3eb11e50015c7fdf4c *data/coalition.rda
 e345c7f6454cf980fb37d953887f5681 *data/endometrial.rda
 42c306499e308f8a3c6c484f35cbc644 *data/lizards.rda
-fc18d7211541d256ac4642c138338b7f *inst/CITATION
 d41d8cd98f00b204e9800998ecf8427e *inst/dev_resids.R
 b371c7de3e5e5882600f262effafb442 *inst/doc/iteration.R
 6baca7e5eb90f12882778a01f836198e *inst/doc/iteration.Rmd
 2e42f81e28c91bec879ee3371050304a *inst/doc/iteration.pdf
-dae13b2c0849d0162ae6184168f1bd99 *inst/doc/multinomial.R
-dd9625c477b3967382bc924cf59a01d9 *inst/doc/multinomial.Rmd
-993e11c9fac02f7870c96ab86d9b5594 *inst/doc/multinomial.html
+5cd8fa53560879247972cf0a1fdbe2d3 *inst/doc/multinomial.R
+ebe19c7dd4b5ca4dde4b7b24dc53a318 *inst/doc/multinomial.Rmd
+b90f96ecaef8c48c57f2b963d30467a4 *inst/doc/multinomial.html
 5fdf127338915c39e82330ce3cd5a35f *inst/doc/separation.R
 8868df502259ebefbebd3b9f10680376 *inst/doc/separation.Rmd
-b0a1c304239bd46be16dea6eb06d1a76 *inst/doc/separation.html
+ccacff5a65b4b5d65c0654a0abb23715 *inst/doc/separation.html
 4869937ffa218dc4ae01afc58a9c5c2f *man/alligators.Rd
 dc94573da1580a0c22f7dc5843dac7b6 *man/brglm2.Rd
 f31805b885d615e34329a0a9e3d1d6da *man/brglmControl.Rd
@@ -45,5 +44,5 @@ dc03eb1e117cd2d1b2769cfd6018fc60 *man/summary.brglmFit.Rd
 414e9a0ed2285ebf82f587eac7bf753d *man/vcov.brglmFit.Rd
 b591331577e8f24aa4fe752b3490751a *vignettes/brglm2.bib
 6baca7e5eb90f12882778a01f836198e *vignettes/iteration.Rmd
-dd9625c477b3967382bc924cf59a01d9 *vignettes/multinomial.Rmd
+ebe19c7dd4b5ca4dde4b7b24dc53a318 *vignettes/multinomial.Rmd
 8868df502259ebefbebd3b9f10680376 *vignettes/separation.Rmd
