@@ -296,103 +296,103 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">data</span>(<span class="st">&quot;endometrial&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;brglm2&quot;</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">modML &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;probit&quot;</span>), <span class="dt">data =</span> endometrial)</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">theta_mle &lt;-<span class="st"> </span><span class="kw">coef</span>(modML)</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">summary</span>(modML)</a></code></pre></div>
-<pre><code>## 
-## Call:
-## glm(formula = HG ~ NV + PI + EH, family = binomial(&quot;probit&quot;), 
-##     data = endometrial)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.47007  -0.67917  -0.32978   0.00008   2.74898  
-## 
-## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   2.18093    0.85732   2.544 0.010963 *  
-## NV            5.80468  402.23641   0.014 0.988486    
-## PI           -0.01886    0.02360  -0.799 0.424066    
-## EH           -1.52576    0.43308  -3.523 0.000427 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 104.90  on 78  degrees of freedom
-## Residual deviance:  56.47  on 75  degrees of freedom
-## AIC: 64.47
-## 
-## Number of Fisher Scoring iterations: 17</code></pre>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">summary</span>(modML)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; Call:</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; glm(formula = HG ~ NV + PI + EH, family = binomial(&quot;probit&quot;), </span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;     data = endometrial)</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; Deviance Residuals: </span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;      Min        1Q    Median        3Q       Max  </span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt; -1.47007  -0.67917  -0.32978   0.00008   2.74898  </span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt; Coefficients:</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt;              Estimate Std. Error z value Pr(&gt;|z|)    </span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; (Intercept)   2.18093    0.85732   2.544 0.010963 *  </span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; NV            5.80468  402.23641   0.014 0.988486    </span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; PI           -0.01886    0.02360  -0.799 0.424066    </span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; EH           -1.52576    0.43308  -3.523 0.000427 ***</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; ---</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co">#&gt; (Dispersion parameter for binomial family taken to be 1)</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co">#&gt;     Null deviance: 104.90  on 78  degrees of freedom</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="co">#&gt; Residual deviance:  56.47  on 75  degrees of freedom</span></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#&gt; AIC: 64.47</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#&gt; Number of Fisher Scoring iterations: 17</span></a></code></pre></div>
 <p>As is the case for the logistic regression in <span class="citation" data-cites="heinze:02">Heinze and Schemper (2002)</span>, the maximum likelihood (ML) estimate of the parameter for <code>NV</code> is actually infinite. The reported, apparently finite value is merely due to false convergence of the iterative estimation procedure. The same is true for the estimated standard error, and, hence the value <code>r round(coef(summary(modML))[&quot;NV&quot;, &quot;z value&quot;], 3)</code> for the <span class="math inline">\(z\)</span>-statistic cannot be trusted for inference on the size of the effect for <code>NV</code>.</p>
 <p>‘<span class="citation" data-cites="lesaffre:89">Lesaffre and Albert (1989, Section 4)</span> describe a procedure that can hint on the occurrence of infinite estimates. In particular, the model is successively refitted, by increasing the maximum number of allowed IWLS iterations at east step. At east step the estimated asymptotic standard errors are divided to the corresponding ones from the first fit. If the sequence of ratios diverges, then the maximum likelihood estimate of the corresponding parameter is minus or plus infinity. The following code chunk applies this process to <code>modML</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">check_infinite_estimates</span>(modML)</a></code></pre></div>
-<pre><code>##       (Intercept)           NV       PI       EH
-##  [1,]    1.000000 1.000000e+00 1.000000 1.000000
-##  [2,]    1.320822 1.710954e+00 1.352585 1.523591
-##  [3,]    1.410578 5.468665e+00 1.483265 1.617198
-##  [4,]    1.413505 3.225927e+01 1.490753 1.618462
-##  [5,]    1.413559 3.311464e+02 1.490923 1.618484
-##  [6,]    1.413560 5.786011e+03 1.490924 1.618484
-##  [7,]    1.413560 1.704229e+05 1.490924 1.618484
-##  [8,]    1.413560 3.232598e+06 1.490924 1.618484
-##  [9,]    1.413560 5.402789e+06 1.490924 1.618484
-## [10,]    1.413560 9.295902e+06 1.490924 1.618484
-## [11,]    1.413560 2.290248e+07 1.490924 1.618484
-## [12,]    1.413560 3.953686e+07 1.490924 1.618484
-## [13,]    1.413560 3.953686e+07 1.490924 1.618484
-## [14,]    1.413560 3.953686e+07 1.490924 1.618484
-## [15,]    1.413560 3.953686e+07 1.490924 1.618484
-## [16,]    1.413560 3.953686e+07 1.490924 1.618484
-## [17,]    1.413560 3.953686e+07 1.490924 1.618484
-## [18,]    1.413560 3.953686e+07 1.490924 1.618484
-## [19,]    1.413560 3.953686e+07 1.490924 1.618484
-## [20,]    1.413560 3.953686e+07 1.490924 1.618484</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">check_infinite_estimates</span>(modML)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt;       (Intercept)           NV       PI       EH</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt;  [1,]    1.000000 1.000000e+00 1.000000 1.000000</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt;  [2,]    1.320822 1.710954e+00 1.352585 1.523591</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt;  [3,]    1.410578 5.468665e+00 1.483265 1.617198</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt;  [4,]    1.413505 3.225927e+01 1.490753 1.618462</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt;  [5,]    1.413559 3.311464e+02 1.490923 1.618484</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt;  [6,]    1.413560 5.786011e+03 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt;  [7,]    1.413560 1.704229e+05 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt;  [8,]    1.413560 3.232598e+06 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt;  [9,]    1.413560 5.402789e+06 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; [10,]    1.413560 9.295902e+06 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; [11,]    1.413560 2.290248e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; [12,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; [13,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; [14,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; [15,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; [16,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt; [17,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt; [18,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt; [19,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; [20,]    1.413560 3.953686e+07 1.490924 1.618484</span></a></code></pre></div>
 <p>Clearly, the ratios of estimated standard errors diverge for <code>NV</code>.</p>
 </section>
 <section id="detecting-separation" class="level1">
 <h1>Detecting separation</h1>
 <p><code>detect_separation</code> tests for the occurrence of complete or quasi-complete separation in datasets for binomial response generalized linear models, and finds which of the parameters will have infinite maximum likelihood estimates. <code>detect_separation</code> relies on the linear programming methods developed in <span class="citation" data-cites="konis:07">Konis (2007)</span>.</p>
 <p><code>detect_separation</code> is <em>pre-fit</em> method, in the sense that it does not need to estimate the model to detect separation and/or identify infinite estimates. For example</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">endometrial_sep &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">data =</span> endometrial,</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">                       <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;logit&quot;</span>),</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">                       <span class="dt">method =</span> <span class="st">&quot;detect_separation&quot;</span>)</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">endometrial_sep</a></code></pre></div>
-<pre><code>## Separation: TRUE 
-## Existence of maximum likelihood estimates
-## (Intercept)          NV          PI          EH 
-##           0         Inf           0           0 
-## 0: finite value, Inf: infinity, -Inf: -infinity</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">endometrial_sep &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">data =</span> endometrial,</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">                       <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;logit&quot;</span>),</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">                       <span class="dt">method =</span> <span class="st">&quot;detect_separation&quot;</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">endometrial_sep</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; Separation: TRUE </span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; Existence of maximum likelihood estimates</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; (Intercept)          NV          PI          EH </span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt;           0         Inf           0           0 </span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; 0: finite value, Inf: infinity, -Inf: -infinity</span></a></code></pre></div>
 <p>The <code>detect_separation</code> method reports that there is separation in the data, that the estimates for <code>(Intercept)</code>, <code>PI</code> and <code>EH</code> are finite (coded 0), and that the estimate for <code>NV</code> is plus infinity. So, the actual maximum likelihood estimates are</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">coef</span>(modML) <span class="op">+</span><span class="st"> </span>endometrial_sep<span class="op">$</span>betas</a></code></pre></div>
-<pre><code>## (Intercept)          NV          PI          EH 
-##  2.18092821         Inf -0.01886444 -1.52576146</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">coef</span>(modML) <span class="op">+</span><span class="st"> </span>endometrial_sep<span class="op">$</span>betas</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#&gt; (Intercept)          NV          PI          EH </span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;  2.18092821         Inf -0.01886444 -1.52576146</span></a></code></pre></div>
 <p>and the estimated standard errors are</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">coef</span>(<span class="kw">summary</span>(modML))[, <span class="st">&quot;Std. Error&quot;</span>] <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(endometrial_sep<span class="op">$</span>betas)</a></code></pre></div>
-<pre><code>## (Intercept)          NV          PI          EH 
-##  0.85732428         Inf  0.02359861  0.43307925</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">coef</span>(<span class="kw">summary</span>(modML))[, <span class="st">&quot;Std. Error&quot;</span>] <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(endometrial_sep<span class="op">$</span>betas)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; (Intercept)          NV          PI          EH </span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;  0.85732428         Inf  0.02359861  0.43307925</span></a></code></pre></div>
 </section>
 <section id="citation" class="level1">
 <h1>Citation</h1>
 <p>If you found this vignette or <strong>brglm2</strong> in general useful, please consider citing <strong>brglm2</strong> using</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">citation</span>(<span class="st">&quot;brglm2&quot;</span>)</a></code></pre></div>
-<pre><code>## Warning in citation(&quot;brglm2&quot;): no date field in DESCRIPTION file of package
-## 'brglm2'</code></pre>
-<pre><code>## Warning in citation(&quot;brglm2&quot;): could not determine year for 'brglm2' from
-## package DESCRIPTION file</code></pre>
-<pre><code>## 
-## To cite package 'brglm2' in publications use:
-## 
-##   Ioannis Kosmidis (NA). brglm2: Bias Reduction in Generalized
-##   Linear Models. R package version 0.1.7.
-##   https://github.com/ikosmidis/brglm2
-## 
-## A BibTeX entry for LaTeX users is
-## 
-##   @Manual{,
-##     title = {brglm2: Bias Reduction in Generalized Linear Models},
-##     author = {Ioannis Kosmidis},
-##     note = {R package version 0.1.7},
-##     url = {https://github.com/ikosmidis/brglm2},
-##   }</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">citation</span>(<span class="st">&quot;brglm2&quot;</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt; Warning in citation(&quot;brglm2&quot;): no date field in DESCRIPTION file of package</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; 'brglm2'</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; Warning in citation(&quot;brglm2&quot;): could not determine year for 'brglm2' from</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; package DESCRIPTION file</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; To cite package 'brglm2' in publications use:</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt;   Ioannis Kosmidis (NA). brglm2: Bias Reduction in Generalized</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt;   Linear Models. R package version 0.1.8.</span></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt;   https://github.com/ikosmidis/brglm2</span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt;   @Manual{,</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt;     title = {brglm2: Bias Reduction in Generalized Linear Models},</span></a>
+<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">#&gt;     author = {Ioannis Kosmidis},</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt;     note = {R package version 0.1.8},</span></a>
+<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt;     url = {https://github.com/ikosmidis/brglm2},</span></a>
+<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#&gt;   }</span></a></code></pre></div>
 </section>
 <section id="references" class="level1 unnumbered">
 <h1>References</h1>

@@ -1,3 +1,11 @@
+## ----setup, include = FALSE----------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 6
+)
+
 ## ---- echo = TRUE, eval = TRUE-------------------------------------------
 library("brglm2")
 data("endometrial", package = "brglm2")

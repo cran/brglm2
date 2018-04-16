@@ -1,6 +1,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/brglm2)](https://cran.r-project.org/package=brglm2)
 [![Travis-CI Build Status](https://travis-ci.org/ikosmidis/brglm2.svg?branch=master)](https://travis-ci.org/ikosmidis/brglm2)
 [![Coverage Status](https://img.shields.io/codecov/c/github/ikosmidis/brglm2/master.svg)](https://codecov.io/github/ikosmidis/brglm2?branch=master)
+[![Licence](https://img.shields.io/badge/licence-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 brglm2
 ======
@@ -30,11 +31,10 @@ scoring](https://en.wikipedia.org/wiki/Scoring_algorithm) procedure,
 whose special cases result in a range of explicit and implicit bias
 reduction methods for generalized linear models.
 
-The [iteration
-vignette](https://github.com/ikosmidis/brglm2/blob/master/vignettes/iteration.pdf)
-presents the iteration and gives mathematical details for the
-bias-reducing adjustments to the score functions for generalized
-linear models.
+The iteration vignette and the paper
+[**arXiv:1710.11217**](http://arxiv.org/abs/1804.04085) present the
+iteration and give mathematical details for the bias-reducing
+adjustments to the score functions for generalized linear models.
 
 The classification of bias reduction methods into explicit and
 implicit is as given in [Kosmidis
@@ -43,3 +43,10 @@ implicit is as given in [Kosmidis
 ### References and resources
 
 **brglm2** was presented by [Ioannis Kosmidis](https://www.ucl.ac.uk/~ucakiko/) at the [useR! 2016 international R User conference](http://user2016.org) at University of Stanford on 16 June 2016. The presentation was titled "Reduced-bias inference in generalized linear models" and can be watched online at this [link](https://channel9.msdn.com/Events/useR-international-R-User-conference/useR2016/brglm-Reduced-bias-inference-in-generalized-linear-models).
+
+
+Motivation, details and discussion on the methods that **brglm2** implements are provided in
+
+Kosmidis, I, Kenne Pagui, E C, Sartori N. (2017). Mean and median bias reduction in generalized linear models. *arXiv*, [**arXiv:1710.11217**](http://arxiv.org/abs/1804.04085)
+
+
