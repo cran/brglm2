@@ -6,7 +6,7 @@
 Poisson trick.}
 \usage{
 brmultinom(formula, data, weights, subset, na.action, contrasts = NULL,
-  ref = 1, control = list(...), ...)
+  ref = 1, model = TRUE, x = TRUE, control = list(...), ...)
 }
 \arguments{
 \item{formula}{
@@ -48,6 +48,14 @@ the factors appearing as variables in the model formula.
 regression. Either an integer, in which case
 levels(response)[ref] is used as a baseline, or a character
 string. Default is 1.}
+
+\item{model}{
+  logical. If true, the model frame is saved as component \code{model}
+  of the returned object.
+}
+
+\item{x}{should the model matrix be included with in the result
+(default is \code{TRUE}).}
 
 \item{control}{a list of parameters for controlling the fitting
 process. See \code{\link{brglmControl}} for details.}
@@ -132,13 +140,18 @@ houseBC3 <- update(houseML3, type = "correction")
 
 }
 \references{
-Agrest A (2002). Categorical data analysis (2nd Edition). Wiley. New York.
+Kosmidis I, Kenne Pagui EC, Sartori N (2019). Mean and median bias
+reduction in generalized linear models. *arXiv e-prints*,
+arXiv:1804.04085. To appear in Statistics and Computing, <URL: https://arxiv.org/abs/1804.04085>.
 
-Albert A and Anderson J A (1984). On the Existence of Maximum
+Agresti A. (2002). *Categorical data analysis* (2nd edition). Wiley
+Series in Probability and Statistics. Wiley.
+
+Albert A. and Anderson J. A. (1984). On the Existence of Maximum
 Likelihood Estimates in Logistic Regression Models. *Biometrika*,
 **71** 1--10.
 
-Kosmidis I and Firth D (2011). Multinomial logit bias reduction via
+Kosmidis I. and Firth D. (2011). Multinomial logit bias reduction via
 the Poisson log-linear model. *Biometrika*, **98**, 755-759.
 
 Palmgren, J. (1981). The Fisher Information Matrix for Log Linear

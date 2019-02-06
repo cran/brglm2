@@ -47,6 +47,3 @@ summary(all_mean_sparse)
 all_median_sparse <- update(all_ml_sparse, type = "AS_median")
 summary(all_median_sparse)
 
-## ---- echo = TRUE--------------------------------------------------------
-citation("brglm2")
-

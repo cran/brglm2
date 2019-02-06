@@ -6,6 +6,3 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 
-## ---- echo = TRUE--------------------------------------------------------
-citation("brglm2")
-

@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2017 Ioannis Kosmidis
+# Copyright (C) 2016-2019 Ioannis Kosmidis
 
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,12 +24,14 @@
 #' @inheritParams nnet::multinom
 #' @param control a list of parameters for controlling the fitting
 #'     process. See \code{\link{brglmControl}} for details.
-#' @param ... arguments to be used to form the default 'control'
-#'     argument if it is not supplied directly.
 #' @param ref the reference category to use for multinomial
 #'     regression. Either an integer, in which case
 #'     levels(response)[ref] is used as a baseline, or a character
 #'     string. Default is 1.
+#' @param x should the model matrix be included with in the result
+#'     (default is \code{TRUE}).
+#' @param ... arguments to be used to form the default 'control'
+#'     argument if it is not supplied directly.
 #'
 #' @details
 #'
@@ -83,13 +85,18 @@
 #'
 #' @references
 #'
-#' Agrest A (2002). Categorical data analysis (2nd Edition). Wiley. New York.
+#' Kosmidis I, Kenne Pagui EC, Sartori N (2019). Mean and median bias
+#' reduction in generalized linear models. *arXiv e-prints*,
+#' arXiv:1804.04085. To appear in Statistics and Computing, <URL: https://arxiv.org/abs/1804.04085>.
 #'
-#' Albert A and Anderson J A (1984). On the Existence of Maximum
+#' Agresti A. (2002). *Categorical data analysis* (2nd edition). Wiley
+#' Series in Probability and Statistics. Wiley.
+#'
+#' Albert A. and Anderson J. A. (1984). On the Existence of Maximum
 #' Likelihood Estimates in Logistic Regression Models. *Biometrika*,
 #' **71** 1--10.
 #'
-#' Kosmidis I and Firth D (2011). Multinomial logit bias reduction via
+#' Kosmidis I. and Firth D. (2011). Multinomial logit bias reduction via
 #' the Poisson log-linear model. *Biometrika*, **98**, 755-759.
 #'
 #' Palmgren, J. (1981). The Fisher Information Matrix for Log Linear
@@ -122,7 +129,10 @@
 #'
 #'
 #' @export
-brmultinom <- function(formula, data, weights, subset, na.action, contrasts = NULL, ref = 1, control = list(...), ...) {
+brmultinom <- function(formula, data, weights, subset, na.action,
+                       contrasts = NULL, ref = 1,
+                       model = TRUE, x = TRUE,
+                       control = list(...), ...) {
     call <- match.call()
     if (missing(data)) {
         data <- environment(formula)
@@ -180,12 +190,9 @@ brmultinom <- function(formula, data, weights, subset, na.action, contrasts = NU
     }
 
     keep <- w > 0
-
-    ## if (any(!keep)) {
-    ##     warning("Observations with non-positive weights have been omited from the computations")
-    ## }
-
     nkeep <- sum(keep)
+    fixed_totals <- rep(seq.int(nkeep), ncat)
+
     ## Set up the model matrix for the poisson fit
     Xnuisance <- Matrix::Diagonal(nkeep)
     Xextended <- cbind(Matrix::kronecker(rep(1, ncat), Xnuisance),
@@ -202,7 +209,7 @@ brmultinom <- function(formula, data, weights, subset, na.action, contrasts = NU
 
     fit <- brglmFit(x = Xextended, y = Yextended,
                     start = NULL,
-                    family = poisson("log"), control = control, intercept = TRUE, fixed_totals = rep(seq.int(nkeep), ncat))
+                    family = poisson("log"), control = control, intercept = TRUE, fixed_totals = fixed_totals)
 
     ## TODO:
     ## + starting values
@@ -211,30 +218,74 @@ brmultinom <- function(formula, data, weights, subset, na.action, contrasts = NU
     ## + control
 
     ## Fitted values
-    coefs <- matrix(fit$coefficients[ofInterest], ncol = ncat - 1)
-    fitted <- matrix(1, nrow(X), ncat)
-    fitted[, -ref] <- apply(coefs, 2, function(b) exp(X %*% b))
-    fitted <- fitted/rowSums(fitted)
-    rownames(fitted) <- rownames(X)
+    fitted <- do.call("rbind", tapply(fit$fitted, fixed_totals, function(x) x/sum(x)))
+    rownames(fitted) <- rownames(X)[keep]
     colnames(fitted) <- lev
-    fit$fitted_values_matrix <- fitted
+    fit$fitted.values <- fitted
     fit$call <- call
     ## fit$fitted.values <- matrix(fit$fitted.values, ncol = ncat)/w[keep]
     ## rownames(fit$fitted.values) <- rownames(X)[keep]
     ## colnames(fit$fitted.values) <- lev
+
     class(fit) <- c("brmultinom", fit$class, "glm")
     fit$ofInterest <- ofInterest
     fit$ncat <- ncat
     fit$lev <- lev
     fit$ref <- ref
+    if (model) {
+        fit$model  <- mf
+    }
+    if (x) {
+        fit$x  <- X
+    }
+    fit$contrasts <- attr(X, "contrasts")
+    fit$xlevels = .getXlevels(Terms, mf)
+    fit$terms <- Terms
     fit$coefNames <- colnames(X)
+    fit$null.deviance <- NULL
     fit
 }
 
 #' @method fitted brmultinom
 #' @export
 fitted.brmultinom <- function(object, ...) {
-    object$fitted_values_matrix
+    object$fitted.values
+}
+
+#' Residuals for multinomial logistic regression and adjacent category logit models
+#'
+#' @param object the object coming out of \code{\link{bracl}} and
+#'     \code{\link{brmultinom}}.
+#' @param type the type of residuals which should be returned.  The
+#'     options are: \code{"pearson"} (default), \code{"response"},
+#'     \code{"deviance"}, \code{"working"}. See Details.
+#' @param ... Currently not used.
+#'
+#' @details
+#'
+#' The residuals computed are the residuals from the equivalent
+#' Poisson log-linear model fit, organised in a form that matches the
+#' output of \code{fitted(object, type = "probs")}. As a result, the
+#' output is residuals defined in terms of the object and expected
+#' multinomial counts.
+#'
+#' @seealso brmultinom bracl
+#'
+#' @method residuals brmultinom
+#' @export
+residuals.brmultinom <- function(object, type = c("pearson", "response", "deviance", "working"), ...) {
+    type <- match.arg(type)
+    ## This is a Poisson log-linear models, so the working weights are
+    ## the fitted counts
+    fitted <- weights(object, type = "working")
+    ## The poisson responses
+    y <- object$y
+    out <- switch(type,
+                  "pearson" = (y - fitted)/sqrt(fitted),
+                  "response" = (y - fitted),
+                  "working" = object$residuals,
+                  "deviance" = object$family$dev.resids(y, fitted, 1))
+    matrix(out, ncol = object$ncat, dimnames = dimnames(fitted(object)))
 }
 
 #' @method coef brmultinom
@@ -253,39 +304,39 @@ coef.brmultinom <- function(object, ...) {
 }
 
 #' @method print brmultinom
-#' @export
 print.brmultinom <- function(x, digits = max(5L, getOption("digits") - 3L), ...) {
      if (!is.null(cl <- x$call)) {
         cat("Call:\n")
         dput(cl, control = NULL)
      }
      cat("\nCoefficients:\n")
-     if (is.null(coef.brmultinom(x))) {
+     if (is.null(coef(x))) {
          print("No coefficients")
      }
      else {
-         print(format(coef.brmultinom(x), digits = digits), print.gap = 2, quote = FALSE)
+         print(format(coef(x), digits = digits), print.gap = 2, quote = FALSE)
      }
-     cat("\nResidual Deviance:", format(x$deviance, digits = digits), "\n")
+     cat("\nResidual Deviance:", format(x$deviance), "\n")
 }
 
 #' @method logLik brmultinom
 #' @export
 logLik.brmultinom <- function(object, ...) {
     structure(-object$deviance/2,
-              df = sum(!is.na(coef.brmultinom(object))),
+              df = sum(!is.na(coef(object))),
               nobs = sum(object$weights),
               class = "logLik")
 }
 
 #' @method summary brmultinom
 #' @export
-summary.brmultinom <- function (object, correlation = FALSE, digits = options()$digits,
-                                Wald.ratios = FALSE, ...) {
+summary.brmultinom <- function(object, correlation = FALSE, digits = options()$digits,
+                               Wald.ratios = FALSE, ...) {
     ncat <- object$ncat
     coefficients <- coef.brmultinom(object)
     object$digits <- digits
     object$AIC <- AIC(object)
+    object$logLik <- logLik(object)
     if (is.null(coefficients)) {
         object$coefficients <- NULL
         object$standard.errors <- NULL
@@ -322,17 +373,13 @@ vcov.brmultinom <- function(object, ...) {
 
 #' @method print summary.brmultinom
 #' @export
-print.summary.brmultinom <- function (x, digits = x$digits, ...)
+print.summary.brmultinom <- function(x, digits = x$digits, ...)
 {
     if (!is.null(cl <- x$call)) {
         cat("Call:\n")
         dput(cl, control = NULL)
     }
     cat("\nCoefficients:\n")
-    ## if (x$is.binomial) {
-    ##     print(cbind(Values = x$coefficients, `Std. Err.` = x$standard.errors,
-    ##         `Value/SE` = x$Wald.ratios), digits = digits)
-    ## }
     print(x$coefficients, digits = digits)
     cat("\nStd. Errors:\n")
     print(x$standard.errors, digits = digits)
@@ -341,6 +388,7 @@ print.summary.brmultinom <- function (x, digits = x$digits, ...)
         print(x$coefficients/x$standard.errors, digits = digits)
     }
     cat("\nResidual Deviance:", format(x$deviance), "\n")
+    cat("Log-likelihood:", format(x$logLik), "\n")
     cat("AIC:", format(x$AIC), "\n")
     if (!is.null(correl <- x$correlation)) {
         p <- dim(correl)[2L]
@@ -353,4 +401,91 @@ print.summary.brmultinom <- function (x, digits = x$digits, ...)
         }
     }
     invisible(x)
+}
+
+#' Predict method for \code{brmultinom} fits
+#'
+#' Obtain class and probability predictions from a fitted baseline
+#' category logits model.
+#'
+#' @param object a fitted object of class inherinting from
+#'     \code{"brmultinom"}.
+#' @param newdata optionally, a data frame in which to look for
+#'     variables with which to predict.  If omitted, the fitted linear
+#'     predictors are used.
+#' @param type the type of prediction required. The default is
+#'     \code{"class"}, which produces predictions of the response
+#'     category at the covariate values supplied in \code{"newdata"},
+#'     selecting the cateogry with the largest probability; the
+#'     alternative \code{"probs"} returns all cateogry probabilities
+#'     at the covariate values supplied in \code{"newdata"}.
+#' @param ... further arguments passed to or from other methods.
+#'
+#'
+#' @details
+#'
+#' If \code{newdata} is omitted the predictions are based on the data
+#' used for the fit.
+#'
+#' @return
+#'
+#' If \code{type = "class"} a vector with the predicted response
+#' categories; if \code{type = "probs"} a matrix of probabilities for
+#' all response categories at \code{newdata}.
+#'
+#' @examples
+#'
+#' data("housing", package = "MASS")
+#'
+#' # Maximum likelihood using brmultinom with baseline category 'Low'
+#' houseML1 <- brmultinom(Sat ~ Infl + Type + Cont, weights = Freq,
+#'                        data = housing, type = "ML", ref = 1)
+#'
+#' # New data
+#' newdata <- expand.grid(Infl = c("Low", "Medium"),
+#'                        Type = c("Tower", "Atrium", "Terrace"),
+#'                        Cont = c("Low", NA, "High"))
+#'
+#' ## Predictions
+#' sapply(c("class", "probs"), function(what) predict(houseML1, newdata, what))
+#'
+#' @method predict brmultinom
+#' @export
+predict.brmultinom <- function(object, newdata, type = c("class", "probs"), ...)
+{
+    ## Adapted from nnet:::predict.multinom
+    if (!inherits(object, "brmultinom"))
+        stop("not a \"brmultinom\" fit")
+    type <- match.arg(type)
+    if (missing(newdata))
+        Y <- fitted(object)
+    else {
+        newdata <- as.data.frame(newdata)
+        rn <- row.names(newdata)
+        Terms <- delete.response(object$terms)
+        m <- model.frame(Terms, newdata, na.action = na.omit,
+            xlev = object$xlevels)
+        if (!is.null(cl <- attr(Terms, "dataClasses")))
+            .checkMFClasses(cl, m)
+        keep <- match(row.names(m), rn)
+        X <- model.matrix(Terms, m, contrasts = object$contrasts)
+
+        coefs <- coef(object)
+        fits <- matrix(0, nrow = nrow(X), ncol = object$ncat, dimnames = list(rn[keep], object$lev))
+        fits1 <- apply(coefs, 1, function(b) X %*% b)
+        fits[, rownames(coefs)] <- fits1
+        Y1 <- t(apply(fits, 1, function(x) exp(x) / sum(exp(x))))
+        Y <- matrix(NA, nrow(newdata), ncol(Y1), dimnames = list(rn, colnames(Y1)))
+        Y[keep, ] <- Y1
+    }
+    switch(type, class = {
+        if (length(object$lev) > 2L) Y <- factor(max.col(Y),
+            levels = seq_along(object$lev), labels = object$lev)
+        if (length(object$lev) == 2L) Y <- factor(1 + (Y > 0.5),
+            levels = 1L:2L, labels = object$lev)
+        if (length(object$lev) == 0L) Y <- factor(max.col(Y),
+            levels = seq_along(object$lab), labels = object$lab)
+    }, probs = {
+    })
+    drop(Y)
 }

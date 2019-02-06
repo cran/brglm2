@@ -65,11 +65,12 @@
 #' @docType package
 #' @name brglm2
 #' @import stats
-#' @import MASS
 #' @import enrichwith
+#' @import Matrix
+#' @import MASS
 #' @importFrom graphics plot
 #' @importFrom nnet class.ind
-#' @import Matrix
+#' @importFrom numDeriv grad
 #'
 #'
 NULL
@@ -80,8 +81,8 @@ if (getRversion() >= "2.15.1") globalVariables(c("n", "lambda"))
 
 #' Generic method for checking for infinite estimates
 #' @param object a fitted model object (e.g. the result of a
-#'     \code{\link{glm}} call)
-#' @param ... other options to be passed to the method
+#'     \code{\link{glm}} call).
+#' @param ... other options to be passed to the method.
 #' @export
 check_infinite_estimates <- function(object, ...) {
     UseMethod("check_infinite_estimates")

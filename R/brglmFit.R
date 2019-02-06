@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2017 Ioannis Kosmidis
+# Copyright (C) 2016-2019 Ioannis Kosmidis
 # function `AS_median_adjustment`: Copyright (C) 2017, Euloge Clovis Kenne Pagui, Ioannis Kosmidis
 
 #  This program is free software; you can redistribute it and/or modify
@@ -32,13 +32,13 @@
 #'
 #' @inheritParams stats::glm.fit
 #' @aliases brglm_fit
-#' @param x \code{x} is a design matrix of dimension \code{n * p},
-#' @param y \code{y} is a vector of observations of length \code{n}
+#' @param x \code{x} is a design matrix of dimension \code{n * p}.
+#' @param y \code{y} is a vector of observations of length \code{n}.
 #' @param control a list of parameters controlling the fitting
 #'     process. See \code{\link{brglmControl}} for details.
 #' @param start starting values for the parameters in the linear
 #'     predictor. If \code{NULL} (default) then the maximum likelihood
-#'     estimates are caluclated and used as starting values
+#'     estimates are caluclated and used as starting values.
 #' @param mustart applied only when start is not \code{NULL}. Starting
 #'     values for the vector of means to be passed to
 #'     \code{\link{glm.fit}} when computing starting values using
@@ -60,9 +60,9 @@
 #'
 #' A detailed description of the supported adjustments and the quasi
 #' Fisher scoring iteration is given in the iteration vignette (see,
-#' \url{https://cran.r-project.org/package=brglm2/vignettes/iteration.pdf}).
-#' A shorter description of the quasi Fisher scoring iteration is also
-#' given in one of the vignettes of the *enrichwith* R package (see,
+#' Kosmidis et al, 2018).  A shorter description of the quasi Fisher
+#' scoring iteration is also given in one of the vignettes of the
+#' *enrichwith* R package (see,
 #' \url{https://cran.r-project.org/package=enrichwith/vignettes/bias.html}).
 #' Kosmidis and Firth (2010) describe a parallel quasi Newton-Raphson
 #' iteration with the same stationary point.
@@ -88,6 +88,13 @@
 #'     method specified by the \code{type} argument (see
 #'     \code{\link{brglmControl}}).
 #'
+#' The \code{family} argument of the current version of
+#' \code{brglmFit} can accept any combination of \code{\link{family}}
+#' objects and link functions (including ones with user-specified link
+#' functions, \code{\link{mis}} links, and \code{\link{power}} links),
+#' except the \code{\link{quasi}}, \code{\link{quasipoisson}} and
+#' \code{\link{quasibinomial}} families.
+#'
 #' The description of \code{method} argument and the \code{Fitting
 #' functions} section in \code{\link{glm}} gives information on
 #' supplying fitting methods to \code{\link{glm}}.
@@ -103,6 +110,10 @@
 #'
 #' @references
 #'
+#' Kosmidis I, Kenne Pagui EC, Sartori N (2019). Mean and median bias
+#' reduction in generalized linear models. *arXiv e-prints*,
+#' arXiv:1804.04085. To appear in Statistics and Computing, <URL: https://arxiv.org/abs/1804.04085>.
+#'
 #' Cordeiro G. M. & McCullagh, P. (1991). Bias correction in generalized
 #' linear models. *Journal of the Royal Statistical Society. Series B
 #' (Methodological)*, **53**, 629-643
@@ -110,9 +121,9 @@
 #' Firth D. (1993). Bias reduction of maximum likelihood estimates,
 #' Biometrika, **80**, 27-38
 #'
-#' Kenne Pagui E C, Salvan A and Sartori N (2016). Median bias
-#' reduction of maximum likelihood estimates. *arXiv*,
-#' **arXiv:1604.04768**
+#' Kenne Pagui, E. C., A. Salvan, and N. Sartori (2017). Median bias
+#' reduction of maximum likelihood estimates. *Biometrika*, **104**,
+#' 923–938
 #'
 #' Kosmidis I and Firth D (2009). Bias reduction in exponential family
 #' nonlinear models. *Biometrika*, **96**, 793-804
@@ -498,20 +509,6 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         })
     }
 
-    customTransformation <- is.list(control$transformation) & length(control$transformation) == 2
-    if (customTransformation) {
-        transformation0 <- control$transformation
-    }
-
-    control <- do.call("brglmControl", control)
-
-    ## FIXME: Add IBLA
-    adjustment_function <- switch(control$type,
-                            "correction" = AS_mean_adjustment,
-                            "AS_mean" = AS_mean_adjustment,
-                            "AS_median" = AS_median_adjustment,
-                            "AS_mixed" = AS_mixed_adjustment,
-                            "ML" = function(pars, ...) 0)
 
     ## compute_step_components does everything on the scale of the /transformed/ dispersion
     compute_step_components <- function(pars, level = 0, fit = NULL) {
@@ -549,15 +546,30 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         out
     }
 
+    customTransformation <- is.list(control$transformation) & length(control$transformation) == 2
+    if (customTransformation) {
+        transformation0 <- control$transformation
+    }
+
+    control <- do.call("brglmControl", control)
+
+    ## FIXME: Add IBLA
+    adjustment_function <- switch(control$type,
+                            "correction" = AS_mean_adjustment,
+                            "AS_mean" = AS_mean_adjustment,
+                            "AS_median" = AS_median_adjustment,
+                            "AS_mixed" = AS_mixed_adjustment,
+                            "ML" = function(pars, ...) 0)
 
     ## Some useful quantities
     is_ML <- control$type == "ML"
     is_AS_median <- control$type == "AS_median"
+    is_AS_mixed <- control$type == "AS_mixed"
     is_correction <- control$type == "correction"
     no_dispersion <- family$family %in% c("poisson", "binomial")
 
 
-    if (is_AS_median) {
+    if (is_ML | is_AS_median | is_AS_mixed) {
         transformation1 <- control$transformation
         Trans1 <- control$Trans
         inverseTrans1 <- control$inverseTrans
@@ -598,23 +610,53 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         offset <- rep.int(0, nobs)
     }
 
-    ## Enrich the family object with the required derivatives
-    linkglm <- make.link(family$link)
+    ok_links <- c("logit", "probit", "cauchit",
+                  "cloglog", "identity", "log",
+                  "sqrt", "inverse")
+
+
+    if (isTRUE(family$family %in% c("quasi", "quasibinomial", "quasipoisson"))) {
+        stop("`brglmFit` does not currently support the `quasi`, `quasipoisson` and `quasibinomial` families.")
+    }
+
+    ## Enrich family
     family <- enrichwith::enrich(family, with = c("d1afun", "d2afun", "d3afun", "d1variance"))
-    linkglm <- enrichwith::enrich(linkglm, with = "d2mu.deta")
+    if ((family$link %in% ok_links) | (grepl("mu\\^", family$link))) {
+        ## Enrich the link object with d2mu.deta and update family object
+        linkglm <- make.link(family$link)
+        linkglm <- enrichwith::enrich(linkglm, with = "d2mu.deta")
+        ## Put everything into the family object
+        family[names(linkglm)] <- linkglm
+    }
+    ## Annoying thing is that link-glm components other than the
+    ## standard ones disappear when extra arguments are passed to a
+    ## family functions... Anyway, we only require d2mu.deta here.
 
     ## Extract functions from the enriched family object
     variance <- family$variance
     d1variance <- family$d1variance
-    linkinv <- linkglm$linkinv
-    linkfun <- linkglm$linkfun
+    linkinv <- family$linkinv
+    linkfun <- family$linkfun
     if (!is.function(variance) || !is.function(linkinv))
         stop("'family' argument seems not to be a valid family object",
              call. = FALSE)
     dev.resids <- family$dev.resids
     aic <- family$aic
-    mu.eta <- linkglm$mu.eta
-    d2mu.deta <- linkglm$d2mu.deta
+    mu.eta <- family$mu.eta
+    ## If the family is custom then d2mu.deta cannot survive when
+    ## passing throguh current family functions. But mu.eta does; so
+    ## we compute d2mu.deta numerically; this allows also generality,
+    ## as the users can then keep their custom link implementations
+    ## unaltered. Issue is scalability, due to the need of evaluating
+    ## n numerical derivatives
+    if (is.null(family$d2mu.deta)) {
+        d2mu.deta <- function(eta) {
+            numDeriv::grad(mu.eta, eta)
+        }
+    }
+    else {
+        d2mu.deta <- family$d2mu.deta
+    }
     d1afun <- family$d1afun
     d2afun <- family$d2afun
     d3afun <- family$d3afun
@@ -704,6 +746,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
                                control = list(epsilon = control$epsilon,
                                               maxit = 10000, trace = FALSE),
                                intercept = intercept)
+
             ## Set warn to its original value
             options(warn = warn)
             betas <- coef(tempFit)
@@ -823,6 +866,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
                     theta <- c(betas, dispersion)
                     transformed_dispersion <- eval(control$Trans)
                     ## Mean quantities
+
                     quantities <- key_quantities(theta, y = y, level = 2 * !no_dispersion, scale_totals = has_fixed_totals, qr = TRUE)
                     step_components_beta <- compute_step_components(theta, level = 0, fit = quantities)
                     step_components_zeta <- compute_step_components(theta, level = 1, fit = quantities)
@@ -869,6 +913,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
                     step_factor <- step_factor + 1
                     ##  Trace here
                     if (control$trace) {
+
                         trace_iteration()
                     }
                 }
@@ -898,7 +943,6 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
 
         ## QR decomposition and fitted values are at the final value
         ## for the coefficients
-
         ## QR decomposition for cov.unscaled
         if (!isTRUE(is_full_rank)) {
             x <- X_all
@@ -911,6 +955,7 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         ## calculating QR decompositions, fitted values, etas,
         ## residuals and working_weights
 
+        quantities <- key_quantities(c(betas, dispersion), y = y, level = 2 * !no_dispersion, scale_totals = has_fixed_totals, qr = TRUE)
         qr.Wx <- quantities$qr_decomposition
 
         mus <- quantities$mus
@@ -924,14 +969,14 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
 
         if (!no_dispersion) {
             info_transformed_dispersion <- 1/step_components_zeta$inverse_info
-            if (is_AS_median) {
+            if (is_ML | is_AS_median | is_AS_mixed) {
                 transformed_dispersion <- eval(Trans1)
                 d1zeta <- eval(DD(Trans1, "dispersion", order = 1))
                 adjusted_grad_all["Transformed dispersion"] <- adjusted_grad_all["Transformed dispersion"] / d1zeta
                 info_transformed_dispersion <- info_transformed_dispersion / d1zeta^2
             }
         }
-        if (is_AS_median) {
+        if (is_ML | is_AS_median  | is_AS_mixed) {
             control$transformation <- transformation1
             control$trans <- Trans1
             control$inverseTrans <- inverseTrans1
@@ -989,9 +1034,11 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
         control0$transformation <- transformation0
     }
     if (intercept & missing_offset) {
-        nullFit <- brglmFit(x = x[, "(Intercept)"], y = y, weights = weights,
+        nullFit <- brglmFit(x = x[, "(Intercept)", drop = FALSE], y = y, weights = weights,
                             offset = rep(0, nobs), family = family, intercept = TRUE,
-                            control = control0[c("epsilon", "maxit", "type", "transformation", "slowit")])
+                            control = control0[c("epsilon", "maxit", "type", "transformation", "slowit")],
+                            start = if (no_dispersion) linkfun(mean(y)) else c(linkfun(mean(y)), 1))
+        ## FIX: Starting values above are hard-coded. Change in future versions
         nullmus <- nullFit$fitted
     }
     ## If there is an offset but not an intercept then the fitted
@@ -1128,7 +1175,7 @@ confint.brglmFit <- function(object, parm, level = 0.95, ...) {
 #' in a \code{\link{brglmFit}} object
 #'
 #' @inheritParams stats::vcov
-#' @param model character specyfying for which component of the model coefficients shoould be extracted
+#' @param model character specyfying for which component of the model coefficients shoould be extracted.
 #'
 #' @method vcov brglmFit
 #' @export

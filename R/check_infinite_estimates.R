@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2017 Ioannis Kosmidis
+# Copyright (C) 2016-2019 Ioannis Kosmidis
 
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 #'
 #' @aliases checkInfiniteEstimates
 #'
-#' @param object the result of a \code{\link{glm}} call
+#' @param object the result of a \code{\link{glm}} call.
 #' @param nsteps starting from \code{maxit = 1}, the GLM is refitted
 #'     for \code{maxit = 2}, \code{maxit = 3}, \ldots, \code{maxit =
 #'     nsteps}. Default value is 30.
-#' @param ... currently not used#'
+#' @param ... currently not used.
 #'
 #'
 #' @details

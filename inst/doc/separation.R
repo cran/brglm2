@@ -28,6 +28,3 @@ coef(modML) + endometrial_sep$betas
 ## ---- echo = TRUE,  eval = TRUE------------------------------------------
 coef(summary(modML))[, "Std. Error"] + abs(endometrial_sep$betas)
 
-## ---- echo = TRUE--------------------------------------------------------
-citation("brglm2")
-

@@ -8,9 +8,9 @@ check_infinite_estimates(object, ...)
 }
 \arguments{
 \item{object}{a fitted model object (e.g. the result of a
-\code{\link{glm}} call)}
+\code{\link{glm}} call).}
 
-\item{...}{other options to be passed to the method}
+\item{...}{other options to be passed to the method.}
 }
 \description{
 Generic method for checking for infinite estimates

@@ -1,4 +1,4 @@
-# Copyright (C) 2016, 2017 Ioannis Kosmidis
+# Copyright (C) 2016-2019 Ioannis Kosmidis
 
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,23 +22,23 @@
 #'
 #' @inheritParams stats::glm.control
 #' @aliases brglm_control
-#' @param epsilon positive convergence tolerance epsilon
+#' @param epsilon positive convergence tolerance epsilon.
 #' @param maxit integer giving the maximal number of iterations
-#'     allowed
+#'     allowed.
 #' @param trace logical indicating if output should be produced for
-#'     each iteration
-#' @param type the type of fitting methodo to be used. The options are
-#'     \code{AS_mean} (mean-bias reducing adjusted scores; default),
+#'     each iteration.
+#' @param type the type of fitting method to be used. The options are
+#'     \code{AS_mean} (mean-bias reducing adjusted scores),
 #'     \code{AS_median} (median-bias reducting adjusted scores),
-#'     \code{AS_median} (bias reduction using mixed score adjustents),
+#'     \code{AS_mixed} (bias reduction using mixed score adjustents; default),
 #'     \code{correction} (asymptotic bias correction) and \code{ML}
 #'     (maximum likelihood).
 #' @param transformation the transformation of the dispersion to be
 #'     estimated. Default is \code{identity}. See Details.
 #' @param slowit a positive real used as a multiplier for the
-#'     stepsize. The smaller it is the smaller the steps are
+#'     stepsize. The smaller it is the smaller the steps are.
 #' @param max_step_factor the maximum number of step halving steps to
-#'     consider
+#'     consider.
 #'
 #' @details \code{\link{brglmControl}} provides default values and
 #'     sanity checking for the various constants that control the
@@ -90,7 +90,7 @@
 #' @export
 brglmControl <- function(epsilon = 1e-08, maxit = 100,
                          trace = FALSE,
-                         type = c("AS_mean", "AS_median", "AS_mixed", "correction", "ML"),
+                         type = c("AS_mixed", "AS_mean", "AS_median", "correction", "ML"),
                          transformation = "identity",
                          slowit = 1,
                          max_step_factor = 12) {

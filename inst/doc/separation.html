@@ -22,7 +22,7 @@
 <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -35,13 +35,11 @@ code.sourceCode { white-space: pre-wrap; }
 a.sourceLine { text-indent: -1em; padding-left: 1em; }
 }
 pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
+  { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
   { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -284,14 +282,14 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 
-<section id="the-brglm2-package" class="level1">
+<div id="the-brglm2-package" class="section level1">
 <h1>The <strong>brglm2</strong> package</h1>
 <p>Along with methods for improving the estimation of generalized linear models (see <a href="https://cran.r-project.org/package=brglm2/brglm2.pdf"><code>iteration</code></a> vignette), <a href="https://github.com/ikosmidis/brglm2"><strong>brglm2</strong></a> provides <em>pre-fit</em> and <em>post-fit</em> methods for the detection of separation and of infinite maximum likelihood estimates in binomial response generalized linear models.</p>
 <p>The key methods are <code>detect_separation</code> and <code>check_infinite_estimates</code> and this vignettes describes their use.</p>
-</section>
-<section id="checking-for-infinite-estimates" class="level1">
+</div>
+<div id="checking-for-infinite-estimates" class="section level1">
 <h1>Checking for infinite estimates</h1>
-<p><span class="citation" data-cites="heinze:02">Heinze and Schemper (2002)</span> used a logistic regression model to analyse data from a study on endometrial cancer. <span class="citation" data-cites="agresti:15">Agresti (2015, Section 5.7)</span> provide details on the data set. Below, we fit a probit regression model with the same linear predictor as the logistic regression model in <span class="citation" data-cites="heinze:02">Heinze and Schemper (2002)</span>.</p>
+<p><span class="citation">Heinze and Schemper (2002)</span> used a logistic regression model to analyse data from a study on endometrial cancer. <span class="citation">Agresti (2015, Section 5.7)</span> provide details on the data set. Below, we fit a probit regression model with the same linear predictor as the logistic regression model in <span class="citation">Heinze and Schemper (2002)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(<span class="st">&quot;brglm2&quot;</span>)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">data</span>(<span class="st">&quot;endometrial&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;brglm2&quot;</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">modML &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;probit&quot;</span>), <span class="dt">data =</span> endometrial)</a>
@@ -322,8 +320,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#&gt; AIC: 64.47</span></a>
 <a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#&gt; Number of Fisher Scoring iterations: 17</span></a></code></pre></div>
-<p>As is the case for the logistic regression in <span class="citation" data-cites="heinze:02">Heinze and Schemper (2002)</span>, the maximum likelihood (ML) estimate of the parameter for <code>NV</code> is actually infinite. The reported, apparently finite value is merely due to false convergence of the iterative estimation procedure. The same is true for the estimated standard error, and, hence the value <code>r round(coef(summary(modML))[&quot;NV&quot;, &quot;z value&quot;], 3)</code> for the <span class="math inline">\(z\)</span>-statistic cannot be trusted for inference on the size of the effect for <code>NV</code>.</p>
-<p>‘<span class="citation" data-cites="lesaffre:89">Lesaffre and Albert (1989, Section 4)</span> describe a procedure that can hint on the occurrence of infinite estimates. In particular, the model is successively refitted, by increasing the maximum number of allowed IWLS iterations at east step. At east step the estimated asymptotic standard errors are divided to the corresponding ones from the first fit. If the sequence of ratios diverges, then the maximum likelihood estimate of the corresponding parameter is minus or plus infinity. The following code chunk applies this process to <code>modML</code>.</p>
+<p>As is the case for the logistic regression in <span class="citation">Heinze and Schemper (2002)</span>, the maximum likelihood (ML) estimate of the parameter for <code>NV</code> is actually infinite. The reported, apparently finite value is merely due to false convergence of the iterative estimation procedure. The same is true for the estimated standard error, and, hence the value <code>r round(coef(summary(modML))[&quot;NV&quot;, &quot;z value&quot;], 3)</code> for the <span class="math inline">\(z\)</span>-statistic cannot be trusted for inference on the size of the effect for <code>NV</code>.</p>
+<p>‘<span class="citation">Lesaffre and Albert (1989, Section 4)</span> describe a procedure that can hint on the occurrence of infinite estimates. In particular, the model is successively refitted, by increasing the maximum number of allowed IWLS iterations at east step. At east step the estimated asymptotic standard errors are divided to the corresponding ones from the first fit. If the sequence of ratios diverges, then the maximum likelihood estimate of the corresponding parameter is minus or plus infinity. The following code chunk applies this process to <code>modML</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">check_infinite_estimates</span>(modML)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt;       (Intercept)           NV       PI       EH</span></a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt;  [1,]    1.000000 1.000000e+00 1.000000 1.000000</span></a>
@@ -347,10 +345,10 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt; [19,]    1.413560 3.953686e+07 1.490924 1.618484</span></a>
 <a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; [20,]    1.413560 3.953686e+07 1.490924 1.618484</span></a></code></pre></div>
 <p>Clearly, the ratios of estimated standard errors diverge for <code>NV</code>.</p>
-</section>
-<section id="detecting-separation" class="level1">
+</div>
+<div id="detecting-separation" class="section level1">
 <h1>Detecting separation</h1>
-<p><code>detect_separation</code> tests for the occurrence of complete or quasi-complete separation in datasets for binomial response generalized linear models, and finds which of the parameters will have infinite maximum likelihood estimates. <code>detect_separation</code> relies on the linear programming methods developed in <span class="citation" data-cites="konis:07">Konis (2007)</span>.</p>
+<p><code>detect_separation</code> tests for the occurrence of complete or quasi-complete separation in datasets for binomial response generalized linear models, and finds which of the parameters will have infinite maximum likelihood estimates. <code>detect_separation</code> relies on the linear programming methods developed in <span class="citation">Konis (2007)</span>.</p>
 <p><code>detect_separation</code> is <em>pre-fit</em> method, in the sense that it does not need to estimate the model to detect separation and/or identify infinite estimates. For example</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">endometrial_sep &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">data =</span> endometrial,</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">                       <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;logit&quot;</span>),</a>
@@ -369,48 +367,28 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">coef</span>(<span class="kw">summary</span>(modML))[, <span class="st">&quot;Std. Error&quot;</span>] <span class="op">+</span><span class="st"> </span><span class="kw">abs</span>(endometrial_sep<span class="op">$</span>betas)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; (Intercept)          NV          PI          EH </span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt;  0.85732428         Inf  0.02359861  0.43307925</span></a></code></pre></div>
-</section>
-<section id="citation" class="level1">
+</div>
+<div id="citation" class="section level1">
 <h1>Citation</h1>
-<p>If you found this vignette or <strong>brglm2</strong> in general useful, please consider citing <strong>brglm2</strong> using</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">citation</span>(<span class="st">&quot;brglm2&quot;</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt; Warning in citation(&quot;brglm2&quot;): no date field in DESCRIPTION file of package</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; 'brglm2'</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; Warning in citation(&quot;brglm2&quot;): could not determine year for 'brglm2' from</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; package DESCRIPTION file</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; To cite package 'brglm2' in publications use:</span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt;   Ioannis Kosmidis (NA). brglm2: Bias Reduction in Generalized</span></a>
-<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt;   Linear Models. R package version 0.1.8.</span></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt;   https://github.com/ikosmidis/brglm2</span></a>
-<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></a>
-<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt;   @Manual{,</span></a>
-<a class="sourceLine" id="cb6-16" data-line-number="16"><span class="co">#&gt;     title = {brglm2: Bias Reduction in Generalized Linear Models},</span></a>
-<a class="sourceLine" id="cb6-17" data-line-number="17"><span class="co">#&gt;     author = {Ioannis Kosmidis},</span></a>
-<a class="sourceLine" id="cb6-18" data-line-number="18"><span class="co">#&gt;     note = {R package version 0.1.8},</span></a>
-<a class="sourceLine" id="cb6-19" data-line-number="19"><span class="co">#&gt;     url = {https://github.com/ikosmidis/brglm2},</span></a>
-<a class="sourceLine" id="cb6-20" data-line-number="20"><span class="co">#&gt;   }</span></a></code></pre></div>
-</section>
-<section id="references" class="level1 unnumbered">
+<p>If you found this vignette or <strong>brglm2</strong>, in general, useful, please consider citing <strong>brglm2</strong> and the associated paper. You can find information on how to do this by typing <code>citation(&quot;brglm2&quot;)</code>.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
 <h1>References</h1>
 <div id="refs" class="references">
 <div id="ref-agresti:15">
 <p>Agresti, A. 2015. <em>Foundations of Linear and Generalized Linear Models</em>. Wiley Series in Probability and Statistics. Wiley.</p>
 </div>
 <div id="ref-heinze:02">
-<p>Heinze, G., and M. Schemper. 2002. “A Solution to the Problem of Separation in Logistic Regression.” <em>Statistics in Medicine</em> 21:2409–19.</p>
+<p>Heinze, G., and M. Schemper. 2002. “A Solution to the Problem of Separation in Logistic Regression.” <em>Statistics in Medicine</em> 21: 2409–19.</p>
 </div>
 <div id="ref-konis:07">
 <p>Konis, Kjell. 2007. “Linear Programming Algorithms for Detecting Separated Data in Binary Logistic Regression Models.” DPhil, University of Oxford. <a href="https://ora.ox.ac.uk/objects/uuid:8f9ee0d0-d78e-4101-9ab4-f9cbceed2a2a" class="uri">https://ora.ox.ac.uk/objects/uuid:8f9ee0d0-d78e-4101-9ab4-f9cbceed2a2a</a>.</p>
 </div>
 <div id="ref-lesaffre:89">
-<p>Lesaffre, E., and A. Albert. 1989. “Partial Separation in Logistic Discrimination.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em> 51 (1). [Royal Statistical Society, Wiley]:109–16. <a href="http://www.jstor.org/stable/2345845" class="uri">http://www.jstor.org/stable/2345845</a>.</p>
+<p>Lesaffre, E., and A. Albert. 1989. “Partial Separation in Logistic Discrimination.” <em>Journal of the Royal Statistical Society. Series B (Methodological)</em> 51 (1). [Royal Statistical Society, Wiley]: 109–16. <a href="http://www.jstor.org/stable/2345845" class="uri">http://www.jstor.org/stable/2345845</a>.</p>
 </div>
 </div>
-</section>
+</div>
 
 
 
