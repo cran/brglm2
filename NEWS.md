@@ -1,3 +1,15 @@
+# brglm 0.5.2
+## Bug fixes
+* `print.brmultinom` is now exported, so `bracl` and `brmultinom` fits print correctly
+
+## New functionality
+* Added `response_adjustment` argument in `brglmControl` to allow for more fine-tuning of the starting values when `brglmFit` is called with `start = NULL`
+
+## Other improvements, updates and additions
+* Documentation updates and improvements
+* Added Kosmidis et al (2019) in the description file
+* Added tests for `brglmControl`
+
 # brglm 0.5.1
 
 ## Other improvements, updates and additions

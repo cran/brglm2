@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -205,6 +206,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -213,8 +217,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">Bias reduction in generalized linear models</h1>
-<h4 class="author"><em><a href="http://www.ucl.ac.uk/~ucakiko/">Ioannis Kosmidis</a>, <a href="http://homes.stat.unipd.it/eulogecloviskennepagui/en/content/home">Euloge Clovis Kenne Pagui</a> and <a href="https://homes.stat.unipd.it/nicolasartori/">Nicola Sartori</a></em></h4>
-<h4 class="date"><em>29 April 2017</em></h4>
+<h4 class="author"><a href="http://www.ikosmidis.com">Ioannis Kosmidis</a>, <a href="http://homes.stat.unipd.it/eulogecloviskennepagui/en/content/home">Euloge Clovis Kenne Pagui</a> and <a href="https://homes.stat.unipd.it/nicolasartori/">Nicola Sartori</a></h4>
+<h4 class="date">29 April 2017</h4>
 
 
 
@@ -235,7 +239,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div id="other-resources" class="section level1">
 <h1>Other resources</h1>
 <p>The bias-reducing quasi Fisher scoring iteration is also described in detail in the <a href="https://cran.r-project.org/package=enrichwith/vignettes/bias.html">bias vignette</a> of the <a href="https://cran.r-project.org/package=enrichwith"><strong>enrichwith</strong></a> R package. <span class="citation">Kosmidis and Firth (2010)</span> describe a parallel quasi <a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton-Raphson</a> procedure.</p>
-<p>Most of the material in this vignette comes from a presentation by <a href="https://www.ucl.ac.uk/~ucakiko/">Ioannis Kosmidis</a> at the <a href="http://user2016.org">useR! 2016 international R User conference</a> at University of Stanford on 16 June 2016. The presentation was titled “Reduced-bias inference in generalized linear models” and can be watched online at this <a href="https://channel9.msdn.com/Events/useR-international-R-User-conference/useR2016/brglm-Reduced-bias-inference-in-generalized-linear-models">link</a>.</p>
+<p>Most of the material in this vignette comes from a presentation by <a href="http://www.ikosmidis.com">Ioannis Kosmidis</a> at the useR! 2016 international conference at University of Stanford on 16 June 2016. The presentation was titled “Reduced-bias inference in generalized linear models” and can be watched online at this <a href="https://channel9.msdn.com/Events/useR-international-R-User-conference/useR2016/brglm-Reduced-bias-inference-in-generalized-linear-models">link</a>.</p>
 </div>
 <div id="generalized-linear-models" class="section level1">
 <h1>Generalized linear models</h1>
@@ -244,8 +248,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Suppose that <span class="math inline">\(y_1, \ldots, y_n\)</span> are observations on independent random variables <span class="math inline">\(Y_1, \ldots, Y_n\)</span>, each with probability density/mass function of the form <span class="math display">\[
 f_{Y_i}(y) = \exp\left\{\frac{y \theta_i - b(\theta_i) - c_1(y)}{\phi/m_i} - \frac{1}{2}a\left(-\frac{m_i}{\phi}\right) + c_2(y) \right\}
 \]</span> for some sufficiently smooth functions <span class="math inline">\(b(.)\)</span>, <span class="math inline">\(c_1(.)\)</span>, <span class="math inline">\(a(.)\)</span> and <span class="math inline">\(c_2(.)\)</span>, and fixed observation weights <span class="math inline">\(m_1, \ldots, m_n\)</span>. The expected value and the variance of <span class="math inline">\(Y_i\)</span> are then <span class="math display">\[\begin{align*}
-      E(Y_i) &amp; = \mu_i =  b'(\theta_i) \\
-      Var(Y_i) &amp; = \frac{\phi}{m_i}b''(\theta_i) = \frac{\phi}{m_i}V(\mu_i)
+      E(Y_i) &amp; = \mu_i =  b&#39;(\theta_i) \\
+      Var(Y_i) &amp; = \frac{\phi}{m_i}b&#39;&#39;(\theta_i) = \frac{\phi}{m_i}V(\mu_i)
 \end{align*}\]</span> Hence, in this parameterization, <span class="math inline">\(\phi\)</span> is a dispersion parameter.</p>
 <p>A generalized linear model links the mean <span class="math inline">\(\mu_i\)</span> to a linear predictor <span class="math inline">\(\eta_i\)</span> as <span class="math display">\[
 g(\mu_i) = \eta_i = \sum_{t=1}^p \beta_t x_{it}
@@ -256,7 +260,7 @@ g(\mu_i) = \eta_i = \sum_{t=1}^p \beta_t x_{it}
 <p>Suppressing the dependence of the various quantities on the model parameters and the data, the derivatives of the log-likelihood about <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\phi\)</span> (score functions) are <span class="math display">\[\begin{align*}
     s_\beta &amp; = \frac{1}{\phi}X^TWD^{-1}(y - \mu) \\
     s_\phi &amp; = \frac{1}{2\phi^2}\sum_{i = 1}^n (q_i - \rho_i)
-\end{align*}\]</span> with <span class="math inline">\(y = (y_1, \ldots, y_n)^\top\)</span>, <span class="math inline">\(\mu = (\mu_1, \ldots, \mu_n)^\top\)</span>, <span class="math inline">\(W = {\rm diag}\left\{w_1, \ldots, w_n\right\}\)</span> and <span class="math inline">\(D = {\rm diag}\left\{d_1, \ldots, d_n\right\}\)</span>, where <span class="math inline">\(w_i = m_i d_i^2/v_i\)</span> is the <span class="math inline">\(i\)</span>th working weight, with <span class="math inline">\(d_i = d\mu_i/d\eta_i\)</span> and <span class="math inline">\(v_i = V(\mu_i)\)</span>. Furthermore, <span class="math inline">\(q_i = -2 m_i \{y_i\theta_i - b(\theta_i) - c_1(y_i)\}\)</span> and <span class="math inline">\(\rho_i = m_i a'_i\)</span> with <span class="math inline">\(a'_i = a'(-m_i/\phi)\)</span>. <!-- are the $i$th deviance residual (e.g. as is implemented in the `dev.resids` component of most `family` objects) and its expectation, respectively, with $a'_i = a'(-m_i/\phi)$. The only `family` object deviating from the above description is `Gamma` where `Gamma()$dev.resids` implements $q_i - 2m_i$ instead of $q_i$. For convenience in implementation, and just for Gamma we define $\rho_i = m_i a'_1 - 2m_i = -2\psi(-m_i/\phi) + 2\log(-m_i/\phi)$, where $\psi$ is the `digamma` function. This change affects none of the estimation methods discussed in this vignette. --> The expected information matrix about <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\phi\)</span> is <span class="math display">\[
+\end{align*}\]</span> with <span class="math inline">\(y = (y_1, \ldots, y_n)^\top\)</span>, <span class="math inline">\(\mu = (\mu_1, \ldots, \mu_n)^\top\)</span>, <span class="math inline">\(W = {\rm diag}\left\{w_1, \ldots, w_n\right\}\)</span> and <span class="math inline">\(D = {\rm diag}\left\{d_1, \ldots, d_n\right\}\)</span>, where <span class="math inline">\(w_i = m_i d_i^2/v_i\)</span> is the <span class="math inline">\(i\)</span>th working weight, with <span class="math inline">\(d_i = d\mu_i/d\eta_i\)</span> and <span class="math inline">\(v_i = V(\mu_i)\)</span>. Furthermore, <span class="math inline">\(q_i = -2 m_i \{y_i\theta_i - b(\theta_i) - c_1(y_i)\}\)</span> and <span class="math inline">\(\rho_i = m_i a&#39;_i\)</span> with <span class="math inline">\(a&#39;_i = a&#39;(-m_i/\phi)\)</span>. <!-- are the $i$th deviance residual (e.g. as is implemented in the `dev.resids` component of most `family` objects) and its expectation, respectively, with $a'_i = a'(-m_i/\phi)$. The only `family` object deviating from the above description is `Gamma` where `Gamma()$dev.resids` implements $q_i - 2m_i$ instead of $q_i$. For convenience in implementation, and just for Gamma we define $\rho_i = m_i a'_1 - 2m_i = -2\psi(-m_i/\phi) + 2\log(-m_i/\phi)$, where $\psi$ is the `digamma` function. This change affects none of the estimation methods discussed in this vignette. --> The expected information matrix about <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\phi\)</span> is <span class="math display">\[
 i =
 \left[
 \begin{array}{cc}
@@ -268,10 +272,10 @@ i_{\beta\beta} &amp; 0_p \\
 \left[
 \begin{array}{cc}
 \frac{1}{\phi} X^\top W X &amp; 0_p \\
-0_p^\top &amp; \frac{1}{2\phi^4}\sum_{i = 1}^n m_i^2 a''_i
+0_p^\top &amp; \frac{1}{2\phi^4}\sum_{i = 1}^n m_i^2 a&#39;&#39;_i
 \end{array}
 \right]\,,
-\]</span> where <span class="math inline">\(0_p\)</span> is a <span class="math inline">\(p\)</span>-vector of zeros, and <span class="math inline">\(a''_i = a''(-m_i/\phi)\)</span>.</p>
+\]</span> where <span class="math inline">\(0_p\)</span> is a <span class="math inline">\(p\)</span>-vector of zeros, and <span class="math inline">\(a&#39;&#39;_i = a&#39;&#39;(-m_i/\phi)\)</span>.</p>
 </div>
 <div id="maximum-likelihood-estimation" class="section level3">
 <h3>Maximum likelihood estimation</h3>
@@ -286,29 +290,29 @@ s_\phi + A_\phi &amp; = 0
 <p>The results in either <span class="citation">Kosmidis and Firth (2009)</span> or <span class="citation">Cordeiro and McCullagh (1991)</span> can then be used to re-express the adjustments in forms that are convenient for implementation. In particular, and after some algebra the bias-reducing adjustments for generalized linear models are <span class="math display">\[\begin{align*}
  A_\beta &amp; = X^\top W \xi \,, \\
  A_\phi &amp; = \frac{(p - 2)}{2\phi} + \frac{\sum_{i = 1}^n m_i^3
-                   a'''_i}{2\phi^2\sum_{i = 1}^n m_i^2
-                   a''_i}
+                   a&#39;&#39;&#39;_i}{2\phi^2\sum_{i = 1}^n m_i^2
+                   a&#39;&#39;_i}
 %A_\phi &amp; = \frac{(p - 2)\phi\sum_{i = 1}^n m_i^2
-%                   a''(-m_i/\phi) + \sum_{i = 1}^n m_i^3
-%                   a'''(-m_i/\phi))}{2\phi^2\sum_{i = 1}^n m_i^2
-%                   a''(-m_i/\phi)}
-\end{align*}\]</span> where <span class="math inline">\(\xi = (\xi_1, \ldots, \xi_n)^T\)</span> with <span class="math inline">\(\xi_i = h_id_i'/(2d_iw_i)\)</span>, <span class="math inline">\(d_i' = d^2\mu_i/d\eta_i^2\)</span>, <span class="math inline">\(a''_i = a''(-m_i/\phi)\)</span>, <span class="math inline">\(a'''_i = a'''(-m_i/\phi)\)</span>, and <span class="math inline">\(h_i\)</span> is the “hat” value for the <span class="math inline">\(i\)</span>th observation (see, e.g. <code>?hatvalues</code>).</p>
+%                   a&#39;&#39;(-m_i/\phi) + \sum_{i = 1}^n m_i^3
+%                   a&#39;&#39;&#39;(-m_i/\phi))}{2\phi^2\sum_{i = 1}^n m_i^2
+%                   a&#39;&#39;(-m_i/\phi)}
+\end{align*}\]</span> where <span class="math inline">\(\xi = (\xi_1, \ldots, \xi_n)^T\)</span> with <span class="math inline">\(\xi_i = h_id_i&#39;/(2d_iw_i)\)</span>, <span class="math inline">\(d_i&#39; = d^2\mu_i/d\eta_i^2\)</span>, <span class="math inline">\(a&#39;&#39;_i = a&#39;&#39;(-m_i/\phi)\)</span>, <span class="math inline">\(a&#39;&#39;&#39;_i = a&#39;&#39;&#39;(-m_i/\phi)\)</span>, and <span class="math inline">\(h_i\)</span> is the “hat” value for the <span class="math inline">\(i\)</span>th observation (see, e.g. <code>?hatvalues</code>).</p>
 </div>
 <div id="median-bias-reducing-adjusted-score-functions" class="section level3">
 <h3>Median bias-reducing adjusted score functions</h3>
 <p>The results in <span class="citation">Kenne Pagui, Salvan, and Sartori (2017)</span> can be used to show that if <span class="math display">\[\begin{align*}
  A_\beta &amp; =  X^\top W (\xi + X u) \\
  A_\phi &amp; = \frac{p}{2\phi}+\frac{ \sum_{i = 1}^n m_i^3
-                   a'''_i}{6\phi^2\sum_{i = 1}^n m_i^2 a''_i} \, ,
+                   a&#39;&#39;&#39;_i}{6\phi^2\sum_{i = 1}^n m_i^2 a&#39;&#39;_i} \, ,
 \end{align*}\]</span> then the solution of the adjusted score equations <span class="math inline">\(s_\beta + A_\beta = 0_p\)</span> and <span class="math inline">\(s_\phi + A_\phi = 0\)</span> results in estimators <span class="math inline">\(\tilde\beta\)</span> and <span class="math inline">\(\tilde\phi\)</span> with median bias of smaller asymptotic order than the maximum likelihood estimator. In the above expression, <span class="math inline">\(u = (u_1, \ldots, u_p)^\top\)</span> with <span class="math display">\[\begin{align*}
     u_j = [(X^\top W X)^{-1}]_{j}^\top X^\top \left[
     \begin{array}{c}
-    \tilde{h}_{j,1} \left\{d_1 v'_1 / (6 v_1) - d'_1/(2 d_1)\right\} \\
+    \tilde{h}_{j,1} \left\{d_1 v&#39;_1 / (6 v_1) - d&#39;_1/(2 d_1)\right\} \\
     \vdots \\
-    \tilde{h}_{j,n} \left\{d_n v'_n / (6 v_n) - d'_n/(2 d_n)\right\}
+    \tilde{h}_{j,n} \left\{d_n v&#39;_n / (6 v_n) - d&#39;_n/(2 d_n)\right\}
     \end{array}
     \right]
-\end{align*}\]</span> where <span class="math inline">\([A]_j\)</span> denotes the <span class="math inline">\(j\)</span>th row of matrix <span class="math inline">\(A\)</span> as a column vector, <span class="math inline">\(v'_i = V'(\mu_i)\)</span>, and <span class="math inline">\(\tilde{h}_{j,i}\)</span> is the <span class="math inline">\(i\)</span>th diagonal element of <span class="math inline">\(X K_j X^T W\)</span>, with <span class="math inline">\(K_j = [(X^\top W X)^{-1}]_{j} [(X^\top W X)^{-1}]_{j}^\top / [(X^\top W X)^{-1}]_{jj}\)</span>.</p>
+\end{align*}\]</span> where <span class="math inline">\([A]_j\)</span> denotes the <span class="math inline">\(j\)</span>th row of matrix <span class="math inline">\(A\)</span> as a column vector, <span class="math inline">\(v&#39;_i = V&#39;(\mu_i)\)</span>, and <span class="math inline">\(\tilde{h}_{j,i}\)</span> is the <span class="math inline">\(i\)</span>th diagonal element of <span class="math inline">\(X K_j X^T W\)</span>, with <span class="math inline">\(K_j = [(X^\top W X)^{-1}]_{j} [(X^\top W X)^{-1}]_{j}^\top / [(X^\top W X)^{-1}]_{jj}\)</span>.</p>
 <!-- The results in @kenne:17 can be used to show that if -->
 <!-- \begin{align*} -->
 <!--  A_\beta & = i_\beta \left\{\frac{u_1}{2} + \frac{u_2}{6} \right\} \\ -->
@@ -404,13 +408,14 @@ s_\phi + A_\phi &amp; = 0
 <li><p>For <span class="math inline">\(K = M = 1\)</span>, <span class="math inline">\(\beta^{(0)} = \hat\beta\)</span> and <span class="math inline">\(\phi^{(0)} = \hat\phi\)</span>, the above iteration computes the bias-corrected estimates proposed in <span class="citation">Cordeiro and McCullagh (1991)</span>. This is achieved with the <code>brglmFit</code> method is used with <code>type = &quot;correction&quot;</code> (see <code>?brglmFit</code>).</p></li>
 <li><p>The mean-bias reducing adjusted score functions are solved when the <code>brglmFit</code> method is used with <code>type = &quot;AS_mean&quot;</code>, and the median-bias reducing adjusted score functions with <code>type = AS_median</code> (see <code>?brglmFit</code>).</p></li>
 <li><p>The steps where <span class="math inline">\(\phi\)</span> and the <span class="math inline">\(\phi\)</span> direction are updated are ignored for generalized linear models with known dispersion parameter, like in models with binomial and Poisson responses. Also, in that case, <span class="math inline">\(v_\phi^{(.)}\)</span> and <span class="math inline">\(\upsilon_\phi^{(.)}\)</span> in steps 9, 14 and 16 are set to zero.</p></li>
-<li><p>The implementation of the adjusted score functions requires ready implementations of <span class="math inline">\(d^2\mu_i/d\eta_i^2\)</span>, <span class="math inline">\(a'(.)\)</span>, <span class="math inline">\(a''(.)\)</span> and <span class="math inline">\(a'''(.)\)</span>. The <a href="https://cran.r-project.org/package=enrichwith"><strong>enrichwith</strong></a> R package is used internally to enrich the base <code>family</code> and <code>link-glm</code> objects with implementations of those functions (see <code>?enrich.family</code> and <code>?enrich.link-glm</code>).</p></li>
+<li><p>The implementation of the adjusted score functions requires ready implementations of <span class="math inline">\(d^2\mu_i/d\eta_i^2\)</span>, <span class="math inline">\(a&#39;(.)\)</span>, <span class="math inline">\(a&#39;&#39;(.)\)</span> and <span class="math inline">\(a&#39;&#39;&#39;(.)\)</span>. The <a href="https://cran.r-project.org/package=enrichwith"><strong>enrichwith</strong></a> R package is used internally to enrich the base <code>family</code> and <code>link-glm</code> objects with implementations of those functions (see <code>?enrich.family</code> and <code>?enrich.link-glm</code>).</p></li>
 <li><p>The above iteration can be used to implement a variety of additive adjustments to the score function, by supplying the algorithm with appropriate adjustment functions <span class="math inline">\(A_\beta\)</span> and <span class="math inline">\(A_\phi\)</span></p></li>
 </ul>
 </div>
 <div id="contributions-to-this-vignette" class="section level1">
 <h1>Contributions to this vignette</h1>
 <p>The first version of the vignette has been written by Ioannis Kosmidis. Eugene Clovis Kenne Pagui and Nicola Sartori contributed the first version of the section “Median bias-reducing adjusted score functions”, and Ioannis Kosmidis brought the expressions for the median bias-reducing adjustments in the reduced form that is shown above and is implemented in <code>brglmFit</code>.</p>
+<p><span class="citation">Kosmidis, Kenne Pagui, and Sartori (2019)</span> provides more details about mean and median bias reduction in generalized linear models.</p>
 </div>
 <div id="citation" class="section level1">
 <h1>Citation</h1>
@@ -429,20 +434,26 @@ s_\phi + A_\phi &amp; = 0
 <p>Firth, D. 1993. “Bias Reduction of Maximum Likelihood Estimates.” <em>Biometrika</em> 80 (1): 27–38.</p>
 </div>
 <div id="ref-kenne:17">
-<p>Kenne Pagui, E. C., A. Salvan, and N. Sartori. 2017. “Median Bias Reduction of Maximum Likelihood Estimates.” <em>ArXiv E-Prints</em>. <a href="http://arxiv.org/abs/1604.04768" class="uri">http://arxiv.org/abs/1604.04768</a>.</p>
+<p>Kenne Pagui, E. C., A. Salvan, and N. Sartori. 2017. “Median Bias Reduction of Maximum Likelihood Estimates.” <em>ArXiv E-Prints</em>. <a href="http://arxiv.org/abs/1604.04768">http://arxiv.org/abs/1604.04768</a>.</p>
 </div>
 <div id="ref-kosmidis:14">
-<p>Kosmidis, I. 2014. “Bias in Parametric Estimation: Reduction and Useful Side-Effects.” <em>Wiley Interdisciplinary Reviews: Computational Statistics</em> 6 (3). John Wiley &amp; Sons, Inc.: 185–96. <a href="https://doi.org/10.1002/wics.1296" class="uri">https://doi.org/10.1002/wics.1296</a>.</p>
+<p>Kosmidis, I. 2014. “Bias in Parametric Estimation: Reduction and Useful Side-Effects.” <em>Wiley Interdisciplinary Reviews: Computational Statistics</em> 6 (3): 185–96. <a href="https://doi.org/10.1002/wics.1296">https://doi.org/10.1002/wics.1296</a>.</p>
 </div>
 <div id="ref-kosmidis:09">
-<p>Kosmidis, I., and D. Firth. 2009. “Bias Reduction in Exponential Family Nonlinear Models.” <em>Biometrika</em> 96 (4): 793–804. <a href="https://doi.org/10.1093/biomet/asp055" class="uri">https://doi.org/10.1093/biomet/asp055</a>.</p>
+<p>Kosmidis, I., and D. Firth. 2009. “Bias Reduction in Exponential Family Nonlinear Models.” <em>Biometrika</em> 96 (4): 793–804. <a href="https://doi.org/10.1093/biomet/asp055">https://doi.org/10.1093/biomet/asp055</a>.</p>
 </div>
 <div id="ref-kosmidis:10">
-<p>———. 2010. “A Generic Algorithm for Reducing Bias in Parametric Estimation.” <em>Electronic Journal of Statistics</em> 4: 1097–1112. <a href="https://doi.org/10.1214/10-EJS579" class="uri">https://doi.org/10.1214/10-EJS579</a>.</p>
+<p>———. 2010. “A Generic Algorithm for Reducing Bias in Parametric Estimation.” <em>Electronic Journal of Statistics</em> 4: 1097–1112. <a href="https://doi.org/10.1214/10-EJS579">https://doi.org/10.1214/10-EJS579</a>.</p>
+</div>
+<div id="ref-kosmidis:2019">
+<p>Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2019. “Mean and Median Bias Reduction in Generalized Linear Models.” <em>arXiv E-Prints</em> arXiv:1804.04085. <a href="https://arxiv.org/abs/1804.04085">https://arxiv.org/abs/1804.04085</a>.</p>
 </div>
 </div>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

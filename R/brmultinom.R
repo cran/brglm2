@@ -81,7 +81,7 @@
 #'
 #' @author Ioannis Kosmidis \email{ioannis.kosmidis@warwick.ac.uk}
 #'
-#' @seealso \code{\link[nnet]{multinom}}
+#' @seealso \code{\link[nnet]{multinom}}, \code{\link{bracl}} for adjacent category logit models for ordinal responses
 #'
 #' @references
 #'
@@ -304,6 +304,7 @@ coef.brmultinom <- function(object, ...) {
 }
 
 #' @method print brmultinom
+#' @export
 print.brmultinom <- function(x, digits = max(5L, getOption("digits") - 3L), ...) {
      if (!is.null(cl <- x$call)) {
         cat("Call:\n")
