@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Ioannis Kosmidis, Euloge Clovis Kenne Pagui and Nicola Sartori" />
 
@@ -32,9 +31,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -203,7 +199,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -320,7 +317,7 @@ s_\phi + A_\phi &amp; = 0
  A_\beta &amp; = X^\top W \xi \,, \\
  A_\phi &amp; = \frac{p}{2\phi}+\frac{ \sum_{i = 1}^n m_i^3
                    a&#39;&#39;&#39;_i}{6\phi^2\sum_{i = 1}^n m_i^2 a&#39;&#39;_i} \, ,
-\end{align*}\]</span> then the solution of the adjusted score equations <span class="math inline">\(s_\beta + A_\beta = 0_p\)</span> and <span class="math inline">\(s_\phi + A_\phi = 0\)</span> results in estimators <span class="math inline">\(\tilde\beta\)</span> with mean bias of small asymptotic order than the maximum likelihood esitmator and <span class="math inline">\(\tilde\phi\)</span> with median bias of smaller asymptotic order than the maximum likelihood estimator.</p>
+\end{align*}\]</span> then the solution of the adjusted score equations <span class="math inline">\(s_\beta + A_\beta = 0_p\)</span> and <span class="math inline">\(s_\phi + A_\phi = 0\)</span> results in estimators <span class="math inline">\(\tilde\beta\)</span> with mean bias of small asymptotic order than the maximum likelihood estimator and <span class="math inline">\(\tilde\phi\)</span> with median bias of smaller asymptotic order than the maximum likelihood estimator.</p>
 </div>
 <div id="maximum-penalized-likelihood-with-powers-of-jefreys-prior-as-penalty" class="section level3">
 <h3>Maximum penalized likelihood with powers of Jefreys prior as penalty</h3>
@@ -439,9 +436,9 @@ s_\phi + A_\phi &amp; = 0
 <h1>Citation</h1>
 <p>If you found this vignette or <strong>brglm2</strong>, in general, useful, please consider citing <strong>brglm2</strong> and the associated paper. You can find information on how to do this by typing <code>citation(&quot;brglm2&quot;)</code>.</p>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
+<div id="references" class="section level1">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references hanging-indent">
 <div id="ref-albert:84">
 <p>Albert, A., and J. A. Anderson. 1984. “On the Existence of Maximum Likelihood Estimates in Logistic Regression Models.” <em>Biometrika</em> 71 (1): 1–10.</p>
 </div>

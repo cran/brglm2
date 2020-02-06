@@ -3,11 +3,16 @@ library("aod")
 data("barley", package = "gnm")
 data("ships", package = "MASS")
 
-qlmodel1 <- glm(y ~ site + variety, family = quasi(link = "logit", variance = "mu(1-mu)"), data = barley)
+qlmodel1 <- glm(y ~ site + variety, family = quasi(link = "logit", variance = "mu(1-mu)"), data = barley, method = "brquasi", type = "QL", )
+
+brmodel1 <- glm(y ~ site + variety, family = quasi(link = "logit", variance = "mu(1-mu)"), data = barley, method = "brquasi", type = "AS_empirical_mean", only_beta = TRUE, disp_factor = "n-p")
+
+
+
+qlmodel2 <- glm(y ~ site + variety, family = wedderburn("logit"), data = barley, method = "brquasi", type = "QL")
+brmodel2 <- glm(y ~ site + variety, family = wedderburn("logit"), data = barley, method = "brquasi", type = "AS_empirical_mean", disp_factor = "n")
+
 qlmodel2 <- glm(y ~ site + variety, family = wedderburn(link = "logit"), data = barley)
-
-brmodel1 <- update(qlmodel1, method = "brquasi", type = "AS_empirical_mean")
-
 brmodel2 <- update(qlmodel2, method = "brquasi", type = "AS_empirical_mean")
 
 
@@ -22,8 +27,9 @@ br_ships <- update(ml_ships, method = "brquasi", type = "AS_empirical_mean")
 ## Crabs from Agresti (2015) 8.1.3, p 271
 Crabs <- read.table("http://users.stat.ufl.edu/~aa/glm/data/Crabs.dat", header = TRUE)
 
-ql_crabs <- glm(y ~ weight, family = quasi(link = "log", variance = "mu"), data = Crabs)
-br_crabs <- update(ql_crabs, method = "brquasi", type = "AS_empirical_mean", start = c(coef(ql_crabs), 1))
+ql_crabs <- glm(y ~ weight + width + color, family = quasi(link = "log", variance = "mu"), data = Crabs, method = "brquasi", type = "QL", disp_factor = "n-p", only_beta = FALSE)
+br_crabs <- glm(y ~ weight + width + color, family = quasi(link = "log", variance = "mu"), data = Crabs, method = "brquasi", type = "AS_empirical_mean", disp_factor = "n", only_beta = FALSE)
+
 
 
 ## Simulation - barley

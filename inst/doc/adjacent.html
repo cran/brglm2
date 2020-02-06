@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Ioannis Kosmidis" />
 
@@ -21,19 +20,18 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -53,7 +51,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -120,9 +118,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -291,7 +286,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -345,7 +341,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; </span></span>
 <span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; Residual Deviance: 2033.208 </span></span>
 <span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; Log-likelihood: -1016.604 </span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; AIC: 2215.905</span></span></code></pre></div>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; AIC: 2043.208</span></span></code></pre></div>
 <p><code>stemcells_ml</code> is an object inheriting from</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span>(stemcells_ml)</span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; [1] &quot;bracl&quot;      &quot;brmultinom&quot; &quot;brglmFit&quot;   &quot;glm&quot;</span></span></code></pre></div>
@@ -374,7 +370,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; </span></span>
 <span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Residual Deviance: 2026.887 </span></span>
 <span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; Log-likelihood: -1013.443 </span></span>
-<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; AIC: 2217.584</span></span></code></pre></div>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; AIC: 2044.887</span></span></code></pre></div>
 <p>The value of the log likelihood ratio statistic here is</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>(lrt &lt;-<span class="st"> </span><span class="kw">deviance</span>(stemcells_ml) <span class="op">-</span><span class="st"> </span><span class="kw">deviance</span>(stemcells_ml_full))</span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; [1] 6.321373</span></span></code></pre></div>
@@ -407,7 +403,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; </span></span>
 <span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; Residual Deviance: 2033.215 </span></span>
 <span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; Log-likelihood: -1016.608 </span></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; AIC: 2215.912</span></span></code></pre></div>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; AIC: 2043.215</span></span></code></pre></div>
 <p>and for median</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">summary</span>(<span class="kw">update</span>(stemcells_ml, <span class="dt">type =</span> <span class="st">&quot;AS_median&quot;</span>))</span>
 <span id="cb9-2"><a href="#cb9-2"></a><span class="co">#&gt; Call:</span></span>
@@ -426,7 +422,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; </span></span>
 <span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; Residual Deviance: 2033.21 </span></span>
 <span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; Log-likelihood: -1016.605 </span></span>
-<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; AIC: 2215.907</span></span></code></pre></div>
+<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; AIC: 2043.21</span></span></code></pre></div>
 <p>The estimates from mean and median bias reduction are similar to the maximum likelihood ones, indicating that estimation bias is not a major issue here.</p>
 </div>
 <div id="prediction" class="section level1">
@@ -467,9 +463,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h1>Citation</h1>
 <p>If you found this vignette or <strong>brglm2</strong>, in general, useful, please consider citing <strong>brglm2</strong> and the associated paper. You can find information on how to do this by typing <code>citation(&quot;brglm2&quot;)</code>.</p>
 </div>
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="refs" class="references">
+<div id="references" class="section level1">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references hanging-indent">
 <div id="ref-agresti:10">
 <p>Agresti, A. 2010. <em>Analysis of Ordinal Categorical Data</em>. 2nd ed. Wiley Series in Probability and Statistics. Wiley.</p>
 </div>
