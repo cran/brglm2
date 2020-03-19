@@ -16,6 +16,19 @@
 
 <title>Detecting separation and infinite estimates in binomial response GLMs</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -313,7 +326,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="checking-for-infinite-estimates" class="section level1">
 <h1>Checking for infinite estimates</h1>
-<p><span class="citation">Heinze and Schemper (2002)</span> used a logistic regression model to analyse data from a study on endometrial cancer. <span class="citation">Agresti (2015, Section 5.7)</span> provide details on the data set. Below, we fit a probit regression model with the same linear predictor as the logistic regression model in <span class="citation">Heinze and Schemper (2002)</span>.</p>
+<p><span class="citation">Heinze and Schemper (2002)</span> used a logistic regression model to analyze data from a study on endometrial cancer. <span class="citation">Agresti (2015, Section 5.7)</span> provide details on the data set. Below, we fit a probit regression model with the same linear predictor as the logistic regression model in <span class="citation">Heinze and Schemper (2002)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(<span class="st">&quot;brglm2&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2"></a><span class="kw">data</span>(<span class="st">&quot;endometrial&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;brglm2&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a>modML &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;probit&quot;</span>), <span class="dt">data =</span> endometrial)</span>
@@ -347,27 +360,30 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>As is the case for the logistic regression in <span class="citation">Heinze and Schemper (2002)</span>, the maximum likelihood (ML) estimate of the parameter for <code>NV</code> is actually infinite. The reported, apparently finite value is merely due to false convergence of the iterative estimation procedure. The same is true for the estimated standard error, and, hence the value <code>r round(coef(summary(modML))[&quot;NV&quot;, &quot;z value&quot;], 3)</code> for the <span class="math inline">\(z\)</span>-statistic cannot be trusted for inference on the size of the effect for <code>NV</code>.</p>
 <p>‘<span class="citation">Lesaffre and Albert (1989, Section 4)</span> describe a procedure that can hint on the occurrence of infinite estimates. In particular, the model is successively refitted, by increasing the maximum number of allowed IWLS iterations at east step. At east step the estimated asymptotic standard errors are divided to the corresponding ones from the first fit. If the sequence of ratios diverges, then the maximum likelihood estimate of the corresponding parameter is minus or plus infinity. The following code chunk applies this process to <code>modML</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">check_infinite_estimates</span>(modML)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt;       (Intercept)           NV       PI       EH</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt;  [1,]    1.000000 1.000000e+00 1.000000 1.000000</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt;  [2,]    1.320822 1.710954e+00 1.352585 1.523591</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt;  [3,]    1.410578 5.468665e+00 1.483265 1.617198</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt;  [4,]    1.413505 3.225927e+01 1.490753 1.618462</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt;  [5,]    1.413559 3.311464e+02 1.490923 1.618484</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt;  [6,]    1.413560 5.786011e+03 1.490924 1.618484</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt;  [7,]    1.413560 1.704229e+05 1.490924 1.618484</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt;  [8,]    1.413560 3.232598e+06 1.490924 1.618484</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt;  [9,]    1.413560 5.402789e+06 1.490924 1.618484</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; [10,]    1.413560 9.295902e+06 1.490924 1.618484</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; [11,]    1.413560 2.290248e+07 1.490924 1.618484</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; [12,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; [13,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; [14,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; [15,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; [16,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; [17,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; [18,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; [19,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
-<span id="cb2-22"><a href="#cb2-22"></a><span class="co">#&gt; [20,]    1.413560 3.953686e+07 1.490924 1.618484</span></span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; Warning: &#39;check_infinite_estimates&#39; will be removed from &#39;brglm2&#39; at version</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; 0.8. A new version of &#39;check_infinite_estimates&#39; is now maintained in the</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt; &#39;detectseparation&#39; package.</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt;       (Intercept)           NV       PI       EH</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt;  [1,]    1.000000 1.000000e+00 1.000000 1.000000</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt;  [2,]    1.320822 1.710954e+00 1.352585 1.523591</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt;  [3,]    1.410578 5.468665e+00 1.483265 1.617198</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt;  [4,]    1.413505 3.225927e+01 1.490753 1.618462</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt;  [5,]    1.413559 3.311464e+02 1.490923 1.618484</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt;  [6,]    1.413560 5.786011e+03 1.490924 1.618484</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt;  [7,]    1.413560 1.704229e+05 1.490924 1.618484</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt;  [8,]    1.413560 3.232598e+06 1.490924 1.618484</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt;  [9,]    1.413560 5.402789e+06 1.490924 1.618484</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; [10,]    1.413560 9.295902e+06 1.490924 1.618484</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; [11,]    1.413560 2.290248e+07 1.490924 1.618484</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; [12,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; [13,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; [14,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; [15,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="co">#&gt; [16,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="co">#&gt; [17,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a><span class="co">#&gt; [18,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a><span class="co">#&gt; [19,]    1.413560 3.953686e+07 1.490924 1.618484</span></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="co">#&gt; [20,]    1.413560 3.953686e+07 1.490924 1.618484</span></span></code></pre></div>
 <p>Clearly, the ratios of estimated standard errors diverge for <code>NV</code>.</p>
 </div>
 <div id="detecting-separation" class="section level1">
@@ -377,12 +393,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>endometrial_sep &lt;-<span class="st"> </span><span class="kw">glm</span>(HG <span class="op">~</span><span class="st"> </span>NV <span class="op">+</span><span class="st"> </span>PI <span class="op">+</span><span class="st"> </span>EH, <span class="dt">data =</span> endometrial,</span>
 <span id="cb3-2"><a href="#cb3-2"></a>                       <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="st">&quot;logit&quot;</span>),</span>
 <span id="cb3-3"><a href="#cb3-3"></a>                       <span class="dt">method =</span> <span class="st">&quot;detect_separation&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4"></a>endometrial_sep</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; Separation: TRUE </span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; Existence of maximum likelihood estimates</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; (Intercept)          NV          PI          EH </span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt;           0         Inf           0           0 </span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; 0: finite value, Inf: infinity, -Inf: -infinity</span></span></code></pre></div>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; Warning: &#39;detect_separation&#39; will be removed from &#39;brglm2&#39; at version 0.8. A</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; new version of &#39;detect_separation&#39; is now maintained in the &#39;detectseparation&#39;</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; package.</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a>endometrial_sep</span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; Separation: TRUE </span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; Existence of maximum likelihood estimates</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; (Intercept)          NV          PI          EH </span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt;           0         Inf           0           0 </span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; 0: finite value, Inf: infinity, -Inf: -infinity</span></span></code></pre></div>
 <p>The <code>detect_separation</code> method reports that there is separation in the data, that the estimates for <code>(Intercept)</code>, <code>PI</code> and <code>EH</code> are finite (coded 0), and that the estimate for <code>NV</code> is plus infinity. So, the actual maximum likelihood estimates are</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">coef</span>(modML) <span class="op">+</span><span class="st"> </span>endometrial_sep<span class="op">$</span>betas</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; (Intercept)          NV          PI          EH </span></span>
@@ -396,7 +415,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1>Citation</h1>
 <p>If you found this vignette or <strong>brglm2</strong>, in general, useful, please consider citing <strong>brglm2</strong> and the associated paper. You can find information on how to do this by typing <code>citation(&quot;brglm2&quot;)</code>.</p>
 </div>
-<div id="references" class="section level1">
+<div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references hanging-indent">
 <div id="ref-agresti:15">

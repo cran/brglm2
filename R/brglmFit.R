@@ -494,7 +494,6 @@ brglmFit <- function (x, y, weights = rep(1, nobs), start = NULL, etastart = NUL
             }
         })
     }
-
     
     ## Implementation by Euloge Clovis Kenne Pagui, 20 April 2017 (kept here for testing)
     ## AS_median_adjustment <- function(pars, level = 0, fit = NULL) {
@@ -1255,16 +1254,24 @@ confint.brglmFit <- function(object, parm, level = 0.95, ...) {
 #' Return the variance-covariance matrix for the regression parameters
 #' in a \code{\link{brglmFit}} object
 #'
-#' @inheritParams stats::vcov
+#' @inheritParams stats::vcov.glm
 #' @param model character specifying for which component of the model coefficients should be extracted.
+#'
+#' @details
+#'
+#' The options for \code{model} are \code{"mean"} for mean regression
+#' parameters only (default), \code{"dispersion"} for the dispersion
+#' parameter (or the transformed dispersion; see
+#' \code{\link{brglm_control}}), and \code{"mean"} for both the mean
+#' regression and the (transformed) dispersion parameters.
 #'
 #' @method vcov brglmFit
 #' @export
-vcov.brglmFit <- function(object, model = c("mean", "full", "dispersion"), ...) {
+vcov.brglmFit <- function(object, model = c("mean", "full", "dispersion"), complete = TRUE, ...) {
     model <- match.arg(model)
     switch(model,
            mean = {
-               summary.brglmFit(object, ...)$cov.scaled
+               vcov(summary.brglmFit(object, ...), complete = complete)
            },
            dispersion = {
                vtd <- 1/object$info_transformed_dispersion
@@ -1273,7 +1280,7 @@ vcov.brglmFit <- function(object, model = c("mean", "full", "dispersion"), ...) 
                vtd
            },
            full = {
-               vbetas <- summary.brglmFit(object, ...)$cov.scaled
+               vbetas <- vcov(summary.brglmFit(object, ...), complete = complete)
                vtd <- 1/object$info_transformed_dispersion
                nBetasAll <- c(rownames(vbetas), paste0(object$transformation, "(dispersion)"))
                vBetasAll <- cbind(rbind(vbetas, 0),
