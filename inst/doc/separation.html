@@ -29,6 +29,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -323,6 +339,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1>The <strong>brglm2</strong> package</h1>
 <p>Along with methods for improving the estimation of generalized linear models (see <a href="https://cran.r-project.org/package=brglm2/brglm2.pdf"><code>iteration</code></a> vignette), <a href="https://github.com/ikosmidis/brglm2"><strong>brglm2</strong></a> provides <em>pre-fit</em> and <em>post-fit</em> methods for the detection of separation and of infinite maximum likelihood estimates in binomial response generalized linear models.</p>
 <p>The key methods are <code>detect_separation</code> and <code>check_infinite_estimates</code> and this vignettes describes their use.</p>
+<p><strong>Note:</strong></p>
+<p>‘detect_separation’ and <code>check_infinite_estimates</code> will be removed from ‘brglm2’ at version 0.8. New versions are now maintained in the ‘detectseparation’ R package at &lt;URL: <a href="https://cran.r-project.org/package=detectseparation" class="uri">https://cran.r-project.org/package=detectseparation</a>&gt;. In order to use the version in ‘detect_separation’ load first ‘brglm2’ and then ‘detectseparation’, i.e. ‘library(brglm2); library(detectseparation)’.</p>
 </div>
 <div id="checking-for-infinite-estimates" class="section level1">
 <h1>Checking for infinite estimates</h1>

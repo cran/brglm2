@@ -29,6 +29,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 
@@ -326,7 +342,7 @@ s_\phi + A_\phi &amp; = 0
 </div>
 <div id="mixed-adjustments" class="section level3">
 <h3>Mixed adjustments</h3>
-<p>The results in <span class="citation">Kosmidis, Kenne Pagui, and Sartori (2019)</span> can be used to show that if <span class="math display">\[\begin{align*}
+<p>The results in <span class="citation">Kosmidis, Kenne Pagui, and Sartori (2020)</span> can be used to show that if <span class="math display">\[\begin{align*}
  A_\beta &amp; = X^\top W \xi \,, \\
  A_\phi &amp; = \frac{p}{2\phi}+\frac{ \sum_{i = 1}^n m_i^3
                    a&#39;&#39;&#39;_i}{6\phi^2\sum_{i = 1}^n m_i^2 a&#39;&#39;_i} \, ,
@@ -443,7 +459,7 @@ s_\phi + A_\phi &amp; = 0
 <div id="contributions-to-this-vignette" class="section level1">
 <h1>Contributions to this vignette</h1>
 <p>The first version of the vignette has been written by Ioannis Kosmidis. Eugene Clovis Kenne Pagui and Nicola Sartori contributed the first version of the section “Median bias-reducing adjusted score functions”, and Ioannis Kosmidis brought the expressions for the median bias-reducing adjustments in the reduced form that is shown above and is implemented in <code>brglmFit</code>.</p>
-<p><span class="citation">Kosmidis, Kenne Pagui, and Sartori (2019)</span> provides more details about mean and median bias reduction in generalized linear models.</p>
+<p><span class="citation">Kosmidis, Kenne Pagui, and Sartori (2020)</span> provides more details about mean and median bias reduction in generalized linear models.</p>
 </div>
 <div id="citation" class="section level1">
 <h1>Citation</h1>
@@ -462,7 +478,7 @@ s_\phi + A_\phi &amp; = 0
 <p>Firth, D. 1993. “Bias Reduction of Maximum Likelihood Estimates.” <em>Biometrika</em> 80 (1): 27–38.</p>
 </div>
 <div id="ref-kenne:17">
-<p>Kenne Pagui, E. C., A. Salvan, and N. Sartori. 2017. “Median Bias Reduction of Maximum Likelihood Estimates.” <em>ArXiv E-Prints</em>. <a href="http://arxiv.org/abs/1604.04768">http://arxiv.org/abs/1604.04768</a>.</p>
+<p>Kenne Pagui, E. C., A. Salvan, and N. Sartori. 2017. “Median Bias Reduction of Maximum Likelihood Estimates.” <em>Biometrika</em> 104 (4): 923–38. <a href="https://doi.org/10.1093/biomet/asx046">https://doi.org/10.1093/biomet/asx046</a>.</p>
 </div>
 <div id="ref-kosmidis:14">
 <p>Kosmidis, I. 2014. “Bias in Parametric Estimation: Reduction and Useful Side-Effects.” <em>Wiley Interdisciplinary Reviews: Computational Statistics</em> 6 (3): 185–96. <a href="https://doi.org/10.1002/wics.1296">https://doi.org/10.1002/wics.1296</a>.</p>
@@ -474,7 +490,7 @@ s_\phi + A_\phi &amp; = 0
 <p>———. 2010. “A Generic Algorithm for Reducing Bias in Parametric Estimation.” <em>Electronic Journal of Statistics</em> 4: 1097–1112. <a href="https://doi.org/10.1214/10-EJS579">https://doi.org/10.1214/10-EJS579</a>.</p>
 </div>
 <div id="ref-kosmidis:2019">
-<p>Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2019. “Mean and Median Bias Reduction in Generalized Linear Models.” <em>arXiv E-Prints</em> arXiv:1804.04085. <a href="https://arxiv.org/abs/1804.04085">https://arxiv.org/abs/1804.04085</a>.</p>
+<p>Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2020. “Mean and Median Bias Reduction in Generalized Linear Models.” <em>Statistics and Computing</em> 30: 43–59. <a href="https://doi.org/10.1007/s11222-019-09860-6">https://doi.org/10.1007/s11222-019-09860-6</a>.</p>
 </div>
 </div>
 </div>

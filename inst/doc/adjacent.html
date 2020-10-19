@@ -29,6 +29,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -489,7 +505,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>Kosmidis, I., and D. Firth. 2011. “Multinomial Logit Bias Reduction via the Poisson Log-Linear Model.” <em>Biometrika</em> 98 (3): 755–59.</p>
 </div>
 <div id="ref-kosmidis:2019">
-<p>Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2019. “Mean and Median Bias Reduction in Generalized Linear Models.” <em>arXiv E-Prints</em> arXiv:1804.04085. <a href="https://arxiv.org/abs/1804.04085">https://arxiv.org/abs/1804.04085</a>.</p>
+<p>Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2020. “Mean and Median Bias Reduction in Generalized Linear Models.” <em>Statistics and Computing</em> 30: 43–59. <a href="https://doi.org/10.1007/s11222-019-09860-6">https://doi.org/10.1007/s11222-019-09860-6</a>.</p>
 </div>
 </div>
 </div>
