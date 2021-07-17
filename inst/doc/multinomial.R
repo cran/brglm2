@@ -37,8 +37,9 @@ all_ml_sparse <- update(all_ml, weights = round(freq/3), slowit = 0.2)
 summary(all_ml_sparse)
 
 ## ---- echo = TRUE-------------------------------------------------------------
+library("detectseparation")
 se_ratios <- check_infinite_estimates(all_ml_sparse)
-matplot(se_ratios, type = "l", lty = 1, ylim = c(0.5, 1.5), xlab = "Iteration")
+plot(se_ratios)
 
 ## ---- echo = TRUE-------------------------------------------------------------
 all_mean_sparse <- update(all_ml_sparse, type = "AS_mean")

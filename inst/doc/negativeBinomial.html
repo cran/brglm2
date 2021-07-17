@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Euloge Clovis Kenne Pagui, Ioannis Kosmidis" />
+
+<meta name="date" content="2021-06-12" />
+
+<title>Negative binomial regression using brglm2</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Negative binomial regression using <strong>brglm2</strong></h1>
+<h4 class="author"><a href="http://homes.stat.unipd.it/eulogecloviskennepagui/en/content/home">Euloge Clovis Kenne Pagui</a>, <a href="http://www.ikosmidis.com">Ioannis Kosmidis</a></h4>
+<h4 class="date">12 June 2021</h4>
+
+
+
+<div id="brnb" class="section level1">
+<h1><strong>brnb</strong></h1>
+<p>The <a href="https://github.com/ikosmidis/brglm2"><strong>brglm2</strong></a> R package provides the <code>brnb()</code> function for fitting negative binomial regression models (see <span class="citation">Agresti (2015)</span>, Section 7.3, for a recent account on negative binomial regression models) using either maximum likelihood or any of the various bias reduction and adjusted estimating functions methods provided by <code>brglmFit()</code> (see <code>?brglmFit</code> for resources).</p>
+<p>This vignette demonstrates the use of <code>brnb()</code> and of the associated methods, using the case studies in <span class="citation">Kenne Pagui, Salvan, and Sartori (2020)</span>.</p>
+</div>
+<div id="ames-salmonella-data" class="section level1">
+<h1>Ames salmonella data</h1>
+<p><span class="citation">Margolin, Kim, and Risko (1989)</span> provide data from an Ames salmonella reverse mutagenicity assay. The response variable corresponds to the number of revertant colonies observed (<code>freq</code>) on each of three replicate plates (<code>plate</code>), and the covariate (<code>dose</code>) is the dose level of quinoline on the plate in micro-grams. The code chunk below sets up a data frame with the data from replicate 1 in <span class="citation">Margolin, Kim, and Risko (1989, Table 1)</span>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">33</span>, <span class="dv">20</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>          <span class="dv">21</span>, <span class="dv">18</span>, <span class="dv">26</span>, <span class="dv">41</span>, <span class="dv">38</span>, <span class="dv">27</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>          <span class="dv">29</span>, <span class="dv">21</span>, <span class="dv">33</span>, <span class="dv">60</span>, <span class="dv">41</span>, <span class="dv">42</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dose <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">33</span>, <span class="dv">100</span>, <span class="dv">333</span>, <span class="dv">1000</span>), <span class="dv">3</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>plate <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">each =</span> <span class="dv">6</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>(salmonella <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(freq, dose, plate))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    freq dose plate</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    15    0     1</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    16   10     1</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    16   33     1</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    27  100     1</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    33  333     1</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    20 1000     1</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7    21    0     2</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8    18   10     2</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9    26   33     2</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10   41  100     2</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11   38  333     2</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12   27 1000     2</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13   29    0     3</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14   21   10     3</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15   33   33     3</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16   60  100     3</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17   41  333     3</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18   42 1000     3</span></span></code></pre></div>
+<p>The following code chunks reproduces <span class="citation">Kenne Pagui, Salvan, and Sartori (2020, Table 2)</span> by estimating the negative binomial regression model with log link and model formula</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ames_f <span class="ot">&lt;-</span> freq <span class="sc">~</span> dose <span class="sc">+</span> <span class="fu">log</span>(dose <span class="sc">+</span> <span class="dv">10</span>)</span></code></pre></div>
+<p>using the various estimation methods that <code>brnb()</code> supports.</p>
+<div id="maximum-likelihood-estimation" class="section level2">
+<h2>Maximum likelihood estimation</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;brglm2&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ames_ML <span class="ot">&lt;-</span> <span class="fu">brnb</span>(ames_f, <span class="at">link =</span> <span class="st">&quot;log&quot;</span>, <span class="at">data =</span> salmonella,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">transformation =</span> <span class="st">&quot;identity&quot;</span>,  <span class="at">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_ML, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_ML<span class="sc">$</span>vcov.mean), ames_ML<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.1976 0.3246</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3125 0.0879</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0488 0.0281</span></span></code></pre></div>
+</div>
+<div id="bias-reduction" class="section level2">
+<h2>Bias reduction</h2>
+<div id="asymptotic-mean-bias-correction" class="section level3">
+<h3>Asymptotic mean-bias correction</h3>
+<p>The following code chunks updates the model fit using asymptotic mean-bias correction for estimating the model parameters</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ames_BC <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;correction&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BC, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BC<span class="sc">$</span>vcov.mean), ames_BC<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2098 0.3482</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3105 0.0947</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0626 0.0328</span></span></code></pre></div>
+</div>
+<div id="mean-bias-reducing-adjusted-score-equations" class="section level3">
+<h3>Mean-bias reducing adjusted score equations</h3>
+<p>The corresponding fit using mean-bias reducing adjusted score equations is</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ames_BRmean <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mean&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmean, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmean<span class="sc">$</span>vcov.mean), ames_BRmean<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2155 0.3515</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3092 0.0956</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0647 0.0334</span></span></code></pre></div>
+</div>
+</div>
+<div id="median-bias-reducing-adjusted-score-equations" class="section level2">
+<h2>Median-bias reducing adjusted score equations</h2>
+<p>The corresponding fit using median-bias reducing adjusted score equations is</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ames_BRmedian <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_median&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmedian, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmedian<span class="sc">$</span>vcov.mean), ames_BRmedian<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2114 0.3592</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3091 0.0978</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0692 0.0350</span></span></code></pre></div>
+</div>
+<div id="mixed-bias-reducing-adjusted-score-equations" class="section level2">
+<h2>Mixed bias reducing adjusted score equations</h2>
+<p>As is done in <span class="citation">Kosmidis, Kenne Pagui, and Sartori (2020, Section 4)</span> for generalized linear models, we can exploit the Fisher orthogonality of the regression parameters and the dispersion parameter and use a composite bias reduction adjustment to the score functions. Such an adjustment delivers mean-bias reduced estimates for the regression parameters and a median-bias reduced estimate for the dispersion parameter. The resulting estimates of the regression parameters are invariant in terms of their mean bias properties under arbitrary contrasts, and that of the dispersion parameter is invariant in terms of its median bias properties under monotone transformations.</p>
+<p>Fitting the model using mixed-bias reducing adjusted score equations gives</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ames_BRmixed <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mixed&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmixed, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmixed<span class="sc">$</span>vcov.mean), ames_BRmixed<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2170 0.3591</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3088 0.0978</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0693 0.0350</span></span></code></pre></div>
+<!-- # Epileptic seizures data -->
+<!--  @kenne:20[, Section 5.2] provides a detailed description of the variables recorded in the data set. -->
+<!-- ```{r, echo = TRUE} -->
+<!-- library(MASS) -->
+<!-- epil2 <- epil[epil$period == 1, ] -->
+<!-- epil2["period"] <- rep(0, 59); epil2["y"] <- epil2["base"]; epil["time"] <- 1;  -->
+<!-- epil2["time"] <- 4 -->
+<!-- epil2 <- rbind(epil, epil2) -->
+<!-- epil2$pred <- unclass(epil2$trt) * (epil2$period > 0); epil2$subject <- factor(epil2$subject) -->
+<!-- epil3 <- aggregate(epil2, list(epil2$subject, epil2$period > 0), -->
+<!--                    function(x) if(is.numeric(x)) sum(x) else x[1])  -->
+<!-- epil3$pred <- factor(epil3$pred, -->
+<!--                      labels = c("base", "placebo", "drug")) -->
+<!-- contrasts(epil3$pred) <- structure(contr.sdif(3), -->
+<!--                                    dimnames = list(NULL, c("placebo-base", "drug-placebo"))) -->
+<!-- ``` -->
+<!-- ## Maximum likelihood estimation -->
+<!-- The following chunk of code reproduces @kenne:20[, Figure 4]. The model uses the log link on the mean and identity transformation for dispersion parameter. -->
+<!-- ```{r, echo = TRUE} -->
+<!-- epil3_ML <- brnb(y ~ -1+ factor(subject) + factor(pred),  data = epil3, type = "ML") -->
+<!-- ## Estimated of interest regression coefficients and dispersion parameters -->
+<!-- round(c(epil3_ML$coefficients[-c(1:59)], epil3_ML$dispersion), 2) -->
+<!-- ## Estimated standard errors -->
+<!-- round(c(summary(epil3_ML)$coefficients[-c(1:59), 2], sqrt(epil3_ML$vcov.dispersion)), 2) -->
+<!-- ``` -->
+<!-- ## Mean and median bias reduction -->
+<!-- Fitting the model using mean-bias reducing adjusted score equations gives -->
+<!-- ```{r, echo = TRUE} -->
+<!-- epil3_BRmean <- brnb(y ~ -1+ factor(subject) + factor(pred),  data = epil3, type = "AS_mean") -->
+<!-- ## Estimated  of interest regression coefficients and dispersion parameters -->
+<!-- round(c(epil3_BRmean$coefficients[-c(1:59)], epil3_BRmean$dispersion), 2) -->
+<!-- ## Estimated standard errors -->
+<!-- round(c(summary(epil3_BRmean)$coefficients[-c(1:59), 2], sqrt(epil3_BRmean$vcov.dispersion)), 2) -->
+<!-- ``` -->
+<!-- The corresponding fit using median-bias reducing adjusted score equations is -->
+<!-- ```{r, echo = TRUE} -->
+<!-- epil3_BRmedian <- brnb(y ~ -1+ factor(subject) + factor(pred),  data = epil3, type = "AS_median") -->
+<!-- ## Estimated  of interest regression coefficients and dispersion parameters -->
+<!-- round(c(epil3_BRmedian$coefficients[-c(1:59)], epil3_BRmedian$dispersion), 2) -->
+<!-- ## Estimated standard errors -->
+<!-- round(c(summary(epil3_BRmedian)$coefficients[-c(1:59), 2], sqrt(epil3_BRmedian$vcov.dispersion)), 2) -->
+<!-- ``` -->
+<!-- ## Mean bias correction -->
+<!-- ```{r, echo = TRUE} -->
+<!-- epil3_BCmean <- brnb(y ~ -1+ factor(subject) + factor(pred),  data = epil3, type = "correction") -->
+<!-- ## Estimated  of interest regression coefficients and dispersion parameters -->
+<!-- round(c(epil3_BCmean$coefficients[-c(1:59)], epil3_BCmean$dispersion), 2) -->
+<!-- ## Estimated standard errors -->
+<!-- round(c(summary(epil3_BCmean)$coefficients[-c(1:59), 2], sqrt(epil3_BCmean$vcov.dispersion)), 2) -->
+<!-- ``` -->
+<p>The differences between reduced-bias estimation and maximum likelihood are particularly pronounced for the dispersion parameter. Improved estimation of the dispersion parameter results to larger estimated standard errors than maximum likelihood. Hence, the estimated standard errors based on the maximum likelihood estimates appear to be smaller than they should be, which is also supported by the simulation results in <span class="citation">Kenne Pagui, Salvan, and Sartori (2020, Section 5)</span>.</p>
+</div>
+</div>
+<div id="relevant-resources" class="section level1">
+<h1>Relevant resources</h1>
+<p><code>?brglmFit</code> and <code>?brglm_control</code> contain quick descriptions of the various bias reduction methods supported in <strong>brglm2</strong>. The <a href="https://cran.r-project.org/package=brglm2/brglm2.pdf"><code>iteration</code></a> vignette describes the iteration and gives the mathematical details for the bias-reducing adjustments to the score functions for generalized linear models.</p>
+</div>
+<div id="citation" class="section level1">
+<h1>Citation</h1>
+<p>If you found this vignette or <strong>brglm2</strong>, in general, useful, please consider citing <strong>brglm2</strong> and the associated paper. You can find information on how to do this by typing <code>citation(&quot;brglm2&quot;)</code>.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-agresti:15" class="csl-entry">
+Agresti, A. 2015. <em>Foundations of Linear and Generalized Linear Models</em>. Wiley Series in Probability and Statistics. Wiley.
+</div>
+<div id="ref-kenne:20" class="csl-entry">
+Kenne Pagui, E. C., A. Salvan, and N. Sartori. 2020. <span>“Accurate Inference in Negative Binomial Regression.”</span> <em>Eprint arXiv:2011.02784</em>. <a href="https://arxiv.org/abs/2011.02784">https://arxiv.org/abs/2011.02784</a>.
+</div>
+<div id="ref-kosmidis:2019" class="csl-entry">
+Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2020. <span>“Mean and Median Bias Reduction in Generalized Linear Models.”</span> <em>Statistics and Computing</em> 30: 43–59. <a href="https://doi.org/10.1007/s11222-019-09860-6">https://doi.org/10.1007/s11222-019-09860-6</a>.
+</div>
+<div id="ref-magolin:89" class="csl-entry">
+Margolin, Barry H., Byung Soo Kim, and Kenneth J. Risko. 1989. <span>“The Ames Salmonella/Microsome Mutagenicity Assay: Issues of Inference and Validation.”</span> <em>Journal of the American Statistical Association</em> 84 (407): 651–61. <a href="https://doi.org/10.1080/01621459.1989.10478817">https://doi.org/10.1080/01621459.1989.10478817</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

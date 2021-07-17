@@ -9,9 +9,11 @@ knitr::opts_chunk$set(
 ## ---- echo = TRUE-------------------------------------------------------------
 library("brglm2")
 data("stemcell", package = "brglm2")
+stem <- within(stemcell, religion <- as.numeric(religion))
 
 ## ---- echo = TRUE-------------------------------------------------------------
-stemcells_ml <- bracl(research ~ as.numeric(religion) + gender, weights = frequency, data = stemcell,
+stem_formula <- research ~ religion + gender
+stemcells_ml <- bracl(stem_formula, weights = frequency, data = stem,
                       parallel = TRUE, type = "ML")
 summary(stemcells_ml)
 
@@ -19,7 +21,7 @@ summary(stemcells_ml)
 class(stemcells_ml)
 
 ## ---- echo = TRUE-------------------------------------------------------------
-stemcells_ml_full <- bracl(research ~ as.numeric(religion) + gender, weights = frequency, data = stemcell,
+stemcells_ml_full <- bracl(stem_formula, weights = frequency, data = stemcell,
                            parallel = FALSE, type = "ML")
 summary(stemcells_ml_full)
 

@@ -16,35 +16,7 @@
 
 <title>Adjacent category logit models using brglm2</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
-  }
-});
-</script>
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -56,11 +28,19 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -146,188 +126,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
 }
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
 }
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
 }
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
 }
-#TOC ul ul {
-margin-left: -2em;
+div.csl-indent {
+  margin-left: 2em;
 }
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
-}
-pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
-}
-pre:not([class]) {
-background-color: #f7f7f7;
-}
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
-
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
 
 
@@ -347,7 +169,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <div id="bracl" class="section level1">
 <h1><strong>bracl</strong></h1>
-<p>The <a href="https://github.com/ikosmidis/brglm2"><strong>brglm2</strong></a> R package provides <code>bracl</code> which is a wrapper of <code>brglmFit</code> for fitting adjacent category models for ordinal responses using either maximum likelihood or maximum penalized likelihood or any of the various bias reduction methods described in <code>brglmFit</code>. There is a formal equivalence between adjacent category logit models for ordinal responses and multinomial logistic regression models (see, e.g. the <a href="https://cran.r-project.org/package=brglm2/vignettes/multinomial.html">Multinomial logistic regression using brglm2</a> vignette and the <code>brmultinom</code> function). <code>bracl</code> utilized that equivalence and fits the corresponding Poisson log-linear model, by appropriately re-scaling the Poisson means to match the multinomial totals (a.k.a. the “Poisson trick”). The mathematical details and algorithm on using the Poisson trick for mean-bias reduction are given in <span class="citation">Kosmidis and Firth (2011)</span>.</p>
+<p>The <a href="https://github.com/ikosmidis/brglm2"><strong>brglm2</strong></a> R package provides <code>bracl()</code> which is a wrapper of <code>brglmFit()</code> for fitting adjacent category models for ordinal responses using either maximum likelihood or maximum penalized likelihood or any of the various bias reduction methods described in <code>brglmFit()</code>. There is a formal equivalence between adjacent category logit models for ordinal responses and multinomial logistic regression models (see, e.g. the <a href="https://cran.r-project.org/package=brglm2/vignettes/multinomial.html">Multinomial logistic regression using brglm2</a> vignette and the <code>brmultinom()</code> function). <code>bracl()</code> utilizes that equivalence and fits the corresponding Poisson log-linear model, by appropriately re-scaling the Poisson means to match the multinomial totals (a.k.a. the “Poisson trick”). The mathematical details and algorithm on using the Poisson trick for mean-bias reduction are given in <span class="citation">I. Kosmidis and Firth (2011)</span>.</p>
 </div>
 <div id="citation" class="section level1">
 <h1>Citation</h1>
@@ -356,147 +178,152 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="opinion-on-stem-cell-research-and-religious-fundamentalism" class="section level1">
 <h1>Opinion on stem cell research and religious fundamentalism</h1>
 <p>The <code>stemcell</code> data set ships with <strong>brglm2</strong>. <span class="citation">Agresti (2015, Section 4.1)</span> provides a detailed description of the variables recorded in this data set (see also <code>?stemcell</code>).</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(<span class="st">&quot;brglm2&quot;</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">data</span>(<span class="st">&quot;stemcell&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;brglm2&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;brglm2&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;stemcell&quot;</span>, <span class="at">package =</span> <span class="st">&quot;brglm2&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>stem <span class="ot">&lt;-</span> <span class="fu">within</span>(stemcell, religion <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(religion))</span></code></pre></div>
 <div id="maximum-likelihood-estimation" class="section level2">
 <h2>Maximum likelihood estimation</h2>
 <p>The following chunk of code fits an adjacent category logit model with proportional odds and reproduces <span class="citation">Agresti (2010, Table 4.2)</span>. Note that the intercept parameters are different because <span class="citation">Agresti (2010, Table 4.2)</span> uses different contrasts for the intercept parameters.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>stemcells_ml &lt;-<span class="st"> </span><span class="kw">bracl</span>(research <span class="op">~</span><span class="st"> </span><span class="kw">as.numeric</span>(religion) <span class="op">+</span><span class="st"> </span>gender, <span class="dt">weights =</span> frequency, <span class="dt">data =</span> stemcell,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>                      <span class="dt">parallel =</span> <span class="ot">TRUE</span>, <span class="dt">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">summary</span>(stemcells_ml)</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt; Call:</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; bracl(formula = research ~ as.numeric(religion) + gender, data = stemcell, </span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#&gt;     weights = frequency, parallel = TRUE, type = &quot;ML&quot;)</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; </span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt;                          Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#&gt; definitely:(Intercept)    -0.9509     0.1426   -6.67  2.6e-11 ***</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; probably:(Intercept)       0.5573     0.1451    3.84  0.00012 ***</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; probably not:(Intercept)  -0.1066     0.1648   -0.65  0.51776    </span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; as.numeric(religion)       0.2668     0.0479    5.57  2.5e-08 ***</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#&gt; genderfemale              -0.0141     0.0767   -0.18  0.85395    </span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; ---</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; </span></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; Residual Deviance: 2033.208 </span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; Log-likelihood: -1016.604 </span></span>
-<span id="cb2-20"><a href="#cb2-20"></a><span class="co">#&gt; AIC: 2043.208</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>stem_formula <span class="ot">&lt;-</span> research <span class="sc">~</span> religion <span class="sc">+</span> gender</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>stemcells_ml <span class="ot">&lt;-</span> <span class="fu">bracl</span>(stem_formula, <span class="at">weights =</span> frequency, <span class="at">data =</span> stem,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(stemcells_ml)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bracl(formula = stem_formula, data = stem, weights = frequency, </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     parallel = TRUE, type = &quot;ML&quot;)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:(Intercept)    -0.9509     0.1426   -6.67  2.6e-11 ***</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:(Intercept)       0.5573     0.1451    3.84  0.00012 ***</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:(Intercept)  -0.1066     0.1648   -0.65  0.51776    </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; religion                   0.2668     0.0479    5.57  2.5e-08 ***</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; genderfemale              -0.0141     0.0767   -0.18  0.85395    </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual Deviance: 2033.208 </span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Log-likelihood: -1016.604 </span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AIC: 2043.208</span></span></code></pre></div>
 <p><code>stemcells_ml</code> is an object inheriting from</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span>(stemcells_ml)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; [1] &quot;bracl&quot;      &quot;brmultinom&quot; &quot;brglmFit&quot;   &quot;glm&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(stemcells_ml)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;bracl&quot;      &quot;brmultinom&quot; &quot;brglmFit&quot;   &quot;glm&quot;</span></span></code></pre></div>
 <p><strong>brglm2</strong> implements <code>print</code>, <code>coef</code>, <code>fitted</code>, <code>predict</code>, <code>summary</code>, <code>vcov</code> and <code>logLik</code> methods for</p>
 <p>We can check if a model with non-proportional odds fits the data equally well by fitting it and carrying out a likelihood ration test.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>stemcells_ml_full &lt;-<span class="st"> </span><span class="kw">bracl</span>(research <span class="op">~</span><span class="st"> </span><span class="kw">as.numeric</span>(religion) <span class="op">+</span><span class="st"> </span>gender, <span class="dt">weights =</span> frequency, <span class="dt">data =</span> stemcell,</span>
-<span id="cb4-2"><a href="#cb4-2"></a>                           <span class="dt">parallel =</span> <span class="ot">FALSE</span>, <span class="dt">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="kw">summary</span>(stemcells_ml_full)</span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co">#&gt; Call:</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co">#&gt; bracl(formula = research ~ as.numeric(religion) + gender, data = stemcell, </span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="co">#&gt;     weights = frequency, parallel = FALSE, type = &quot;ML&quot;)</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#&gt; </span></span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#&gt;                                   Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#&gt; definitely:(Intercept)             -1.2484     0.2622   -4.76  1.9e-06 ***</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#&gt; probably:(Intercept)                0.4710     0.2902    1.62    0.105    </span></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#&gt; probably not:(Intercept)            0.4274     0.3855    1.11    0.268    </span></span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="co">#&gt; definitely:as.numeric(religion)     0.4382     0.1043    4.20  2.7e-05 ***</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="co">#&gt; probably:as.numeric(religion)       0.2596     0.1289    2.01    0.044 *  </span></span>
-<span id="cb4-15"><a href="#cb4-15"></a><span class="co">#&gt; probably not:as.numeric(religion)   0.0119     0.1742    0.07    0.945    </span></span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="co">#&gt; definitely:genderfemale            -0.1368     0.1677   -0.82    0.414    </span></span>
-<span id="cb4-17"><a href="#cb4-17"></a><span class="co">#&gt; probably:genderfemale               0.1871     0.2085    0.90    0.370    </span></span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="co">#&gt; probably not:genderfemale          -0.1609     0.2806   -0.57    0.566    </span></span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#&gt; ---</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#&gt; </span></span>
-<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#&gt; Residual Deviance: 2026.887 </span></span>
-<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#&gt; Log-likelihood: -1013.443 </span></span>
-<span id="cb4-24"><a href="#cb4-24"></a><span class="co">#&gt; AIC: 2044.887</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>stemcells_ml_full <span class="ot">&lt;-</span> <span class="fu">bracl</span>(stem_formula, <span class="at">weights =</span> frequency, <span class="at">data =</span> stemcell,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">parallel =</span> <span class="cn">FALSE</span>, <span class="at">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(stemcells_ml_full)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bracl(formula = stem_formula, data = stemcell, weights = frequency, </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     parallel = FALSE, type = &quot;ML&quot;)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                           Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:(Intercept)    -0.37499    0.12692   -2.95   0.0031 ** </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:(Intercept)       0.99079    0.15514    6.39  1.7e-10 ***</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:(Intercept)   0.45775    0.21225    2.16   0.0310 *  </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:religion.L      0.59389    0.14794    4.01  6.0e-05 ***</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:religion.L        0.36457    0.18481    1.97   0.0485 *  </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:religion.L   -0.00922    0.24461   -0.04   0.9699    </span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:religion.Q      0.23646    0.14713    1.61   0.1080    </span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:religion.Q       -0.11603    0.18061   -0.64   0.5206    </span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:religion.Q   -0.16547    0.25085   -0.66   0.5095    </span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:genderfemale   -0.12598    0.16817   -0.75   0.4538    </span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:genderfemale      0.18153    0.20877    0.87   0.3846    </span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:genderfemale -0.16828    0.28097   -0.60   0.5492    </span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual Deviance: 2023.391 </span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Log-likelihood: -1011.696 </span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AIC: 2047.391</span></span></code></pre></div>
 <p>The value of the log likelihood ratio statistic here is</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>(lrt &lt;-<span class="st"> </span><span class="kw">deviance</span>(stemcells_ml) <span class="op">-</span><span class="st"> </span><span class="kw">deviance</span>(stemcells_ml_full))</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; [1] 6.321373</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(lrt <span class="ot">&lt;-</span> <span class="fu">deviance</span>(stemcells_ml) <span class="sc">-</span> <span class="fu">deviance</span>(stemcells_ml_full))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 9.816886</span></span></code></pre></div>
 <p>and has an asymptotic chi-squared distribution with</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>(df1 &lt;-<span class="st"> </span><span class="kw">df.residual</span>(stemcells_ml) <span class="op">-</span><span class="st"> </span><span class="kw">df.residual</span>(stemcells_ml_full))</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(df1 <span class="ot">&lt;-</span> <span class="fu">df.residual</span>(stemcells_ml) <span class="sc">-</span> <span class="fu">df.residual</span>(stemcells_ml_full))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 7</span></span></code></pre></div>
 <p>The p-value from testing the hypothesis that <code>stemcells_ml_full</code> is an as good fit as <code>stemcells_ml</code> is</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">pchisq</span>(lrt, df1, <span class="dt">lower.tail =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; [1] 0.1763991</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(lrt, df1, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.19919</span></span></code></pre></div>
 <p>hence, the simpler model is found to be as adequate as the full model is.</p>
 </div>
 </div>
 <div id="mean-and-median-bias-reduction" class="section level1">
 <h1>Mean and median bias reduction</h1>
-<p>We can use <code>bracl</code> to fit the adjacent category model using estimators with smaller mean or median bias. For mean bias reduction we do</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">summary</span>(<span class="kw">update</span>(stemcells_ml, <span class="dt">type =</span> <span class="st">&quot;AS_mean&quot;</span>))</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt; Call:</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt; bracl(formula = research ~ as.numeric(religion) + gender, data = stemcell, </span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt;     weights = frequency, parallel = TRUE, type = &quot;AS_mean&quot;)</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; </span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt;                          Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; definitely:(Intercept)    -0.9456     0.1424   -6.64  3.1e-11 ***</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; probably:(Intercept)       0.5562     0.1450    3.84  0.00012 ***</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; probably not:(Intercept)  -0.1097     0.1644   -0.67  0.50453    </span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; as.numeric(religion)       0.2653     0.0478    5.55  2.8e-08 ***</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; genderfemale              -0.0138     0.0766   -0.18  0.85670    </span></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; ---</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; </span></span>
-<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; Residual Deviance: 2033.215 </span></span>
-<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; Log-likelihood: -1016.608 </span></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; AIC: 2043.215</span></span></code></pre></div>
+<p>We can use <code>bracl()</code> to fit the adjacent category model using estimators with smaller mean or median bias. For mean bias reduction we do</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">update</span>(stemcells_ml, <span class="at">type =</span> <span class="st">&quot;AS_mean&quot;</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bracl(formula = stem_formula, data = stem, weights = frequency, </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     parallel = TRUE, type = &quot;AS_mean&quot;)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:(Intercept)    -0.9456     0.1424   -6.64  3.1e-11 ***</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:(Intercept)       0.5562     0.1450    3.84  0.00012 ***</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:(Intercept)  -0.1097     0.1644   -0.67  0.50453    </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; religion                   0.2653     0.0478    5.55  2.8e-08 ***</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; genderfemale              -0.0138     0.0766   -0.18  0.85670    </span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual Deviance: 2033.215 </span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Log-likelihood: -1016.608 </span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AIC: 2043.215</span></span></code></pre></div>
 <p>and for median</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">summary</span>(<span class="kw">update</span>(stemcells_ml, <span class="dt">type =</span> <span class="st">&quot;AS_median&quot;</span>))</span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="co">#&gt; Call:</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; bracl(formula = research ~ as.numeric(religion) + gender, data = stemcell, </span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt;     weights = frequency, parallel = TRUE, type = &quot;AS_median&quot;)</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; </span></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt;                          Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt; definitely:(Intercept)    -0.9481     0.1425   -6.65  2.8e-11 ***</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; probably:(Intercept)       0.5574     0.1450    3.84  0.00012 ***</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt; probably not:(Intercept)  -0.1082     0.1646   -0.66  0.51105    </span></span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; as.numeric(religion)       0.2659     0.0478    5.56  2.7e-08 ***</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt; genderfemale              -0.0140     0.0766   -0.18  0.85522    </span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; ---</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; </span></span>
-<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; Residual Deviance: 2033.21 </span></span>
-<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; Log-likelihood: -1016.605 </span></span>
-<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt; AIC: 2043.21</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">update</span>(stemcells_ml, <span class="at">type =</span> <span class="st">&quot;AS_median&quot;</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bracl(formula = stem_formula, data = stem, weights = frequency, </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     parallel = TRUE, type = &quot;AS_median&quot;)</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; definitely:(Intercept)    -0.9481     0.1425   -6.65  2.8e-11 ***</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably:(Intercept)       0.5574     0.1450    3.84  0.00012 ***</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; probably not:(Intercept)  -0.1082     0.1646   -0.66  0.51105    </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; religion                   0.2659     0.0478    5.56  2.7e-08 ***</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; genderfemale              -0.0140     0.0766   -0.18  0.85522    </span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual Deviance: 2033.21 </span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Log-likelihood: -1016.605 </span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; AIC: 2043.21</span></span></code></pre></div>
 <p>The estimates from mean and median bias reduction are similar to the maximum likelihood ones, indicating that estimation bias is not a major issue here.</p>
 </div>
 <div id="prediction" class="section level1">
 <h1>Prediction</h1>
-<p>We can predict the category probabilities using the <code>predict</code> method</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">predict</span>(stemcells_ml, <span class="dt">type =</span> <span class="st">&quot;probs&quot;</span>)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt;    definitely  probably probably not definitely not</span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt; 1   0.2138134 0.4297953    0.1911925     0.16519872</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt; 2   0.2931825 0.4513256    0.1537533     0.10173853</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; 3   0.3784551 0.4461609    0.1163995     0.05898444</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; 4   0.2177773 0.4316255    0.1893146     0.16128261</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt; 5   0.2975956 0.4516958    0.1517219     0.09898673</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; 6   0.3830297 0.4452227    0.1145262     0.05722143</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; 7   0.2138134 0.4297953    0.1911925     0.16519872</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt; 8   0.2931825 0.4513256    0.1537533     0.10173853</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt; 9   0.3784551 0.4461609    0.1163995     0.05898444</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt; 10  0.2177773 0.4316255    0.1893146     0.16128261</span></span>
-<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt; 11  0.2975956 0.4516958    0.1517219     0.09898673</span></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="co">#&gt; 12  0.3830297 0.4452227    0.1145262     0.05722143</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a><span class="co">#&gt; 13  0.2138134 0.4297953    0.1911925     0.16519872</span></span>
-<span id="cb10-16"><a href="#cb10-16"></a><span class="co">#&gt; 14  0.2931825 0.4513256    0.1537533     0.10173853</span></span>
-<span id="cb10-17"><a href="#cb10-17"></a><span class="co">#&gt; 15  0.3784551 0.4461609    0.1163995     0.05898444</span></span>
-<span id="cb10-18"><a href="#cb10-18"></a><span class="co">#&gt; 16  0.2177773 0.4316255    0.1893146     0.16128261</span></span>
-<span id="cb10-19"><a href="#cb10-19"></a><span class="co">#&gt; 17  0.2975956 0.4516958    0.1517219     0.09898673</span></span>
-<span id="cb10-20"><a href="#cb10-20"></a><span class="co">#&gt; 18  0.3830297 0.4452227    0.1145262     0.05722143</span></span>
-<span id="cb10-21"><a href="#cb10-21"></a><span class="co">#&gt; 19  0.2138134 0.4297953    0.1911925     0.16519872</span></span>
-<span id="cb10-22"><a href="#cb10-22"></a><span class="co">#&gt; 20  0.2931825 0.4513256    0.1537533     0.10173853</span></span>
-<span id="cb10-23"><a href="#cb10-23"></a><span class="co">#&gt; 21  0.3784551 0.4461609    0.1163995     0.05898444</span></span>
-<span id="cb10-24"><a href="#cb10-24"></a><span class="co">#&gt; 22  0.2177773 0.4316255    0.1893146     0.16128261</span></span>
-<span id="cb10-25"><a href="#cb10-25"></a><span class="co">#&gt; 23  0.2975956 0.4516958    0.1517219     0.09898673</span></span>
-<span id="cb10-26"><a href="#cb10-26"></a><span class="co">#&gt; 24  0.3830297 0.4452227    0.1145262     0.05722143</span></span></code></pre></div>
+<p>We can predict the category probabilities using the <code>predict()</code> method</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(stemcells_ml, <span class="at">type =</span> <span class="st">&quot;probs&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    definitely  probably probably not definitely not</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   0.2138134 0.4297953    0.1911925     0.16519872</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2   0.2931825 0.4513256    0.1537533     0.10173853</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   0.3784551 0.4461609    0.1163995     0.05898444</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4   0.2177773 0.4316255    0.1893146     0.16128261</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5   0.2975956 0.4516958    0.1517219     0.09898673</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6   0.3830297 0.4452227    0.1145262     0.05722143</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7   0.2138134 0.4297953    0.1911925     0.16519872</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8   0.2931825 0.4513256    0.1537533     0.10173853</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9   0.3784551 0.4461609    0.1163995     0.05898444</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10  0.2177773 0.4316255    0.1893146     0.16128261</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11  0.2975956 0.4516958    0.1517219     0.09898673</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12  0.3830297 0.4452227    0.1145262     0.05722143</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13  0.2138134 0.4297953    0.1911925     0.16519872</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14  0.2931825 0.4513256    0.1537533     0.10173853</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15  0.3784551 0.4461609    0.1163995     0.05898444</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16  0.2177773 0.4316255    0.1893146     0.16128261</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17  0.2975956 0.4516958    0.1517219     0.09898673</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18  0.3830297 0.4452227    0.1145262     0.05722143</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19  0.2138134 0.4297953    0.1911925     0.16519872</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20  0.2931825 0.4513256    0.1537533     0.10173853</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 21  0.3784551 0.4461609    0.1163995     0.05898444</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22  0.2177773 0.4316255    0.1893146     0.16128261</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 23  0.2975956 0.4516958    0.1517219     0.09898673</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 24  0.3830297 0.4452227    0.1145262     0.05722143</span></span></code></pre></div>
 </div>
 <div id="relevant-resources" class="section level1">
 <h1>Relevant resources</h1>
-<p><code>?brglmFit</code> and <code>?brglm_control</code> contain quick descriptions of the various bias reduction methods supported in <strong>brglm2</strong>. The <a href="https://cran.r-project.org/package=brglm2/brglm2.pdf"><code>iteration</code></a> vignette describes the iteration and gives the mathematical details for the bias-reducing adjustments to the score functions for generalized linear models.</p>
+<p><code>?brglmFit</code> and <code>?brglm_control</code> provide descriptions of the various bias reduction methods supported in <strong>brglm2</strong>. The <a href="https://cran.r-project.org/package=brglm2/brglm2.pdf"><code>iteration</code></a> vignette describes the iteration and gives the mathematical details for the bias-reducing adjustments to the score functions for generalized linear models.</p>
 </div>
 <div id="citation-1" class="section level1">
 <h1>Citation</h1>
@@ -504,18 +331,18 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references hanging-indent">
-<div id="ref-agresti:10">
-<p>Agresti, A. 2010. <em>Analysis of Ordinal Categorical Data</em>. 2nd ed. Wiley Series in Probability and Statistics. Wiley.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-agresti:10" class="csl-entry">
+Agresti, A. 2010. <em>Analysis of Ordinal Categorical Data</em>. 2nd ed. Wiley Series in Probability and Statistics. Wiley.
 </div>
-<div id="ref-agresti:15">
-<p>———. 2015. <em>Foundations of Linear and Generalized Linear Models</em>. Wiley Series in Probability and Statistics. Wiley.</p>
+<div id="ref-agresti:15" class="csl-entry">
+———. 2015. <em>Foundations of Linear and Generalized Linear Models</em>. Wiley Series in Probability and Statistics. Wiley.
 </div>
-<div id="ref-kosmidis:11">
-<p>Kosmidis, I., and D. Firth. 2011. “Multinomial Logit Bias Reduction via the Poisson Log-Linear Model.” <em>Biometrika</em> 98 (3): 755–59.</p>
+<div id="ref-kosmidis:11" class="csl-entry">
+Kosmidis, I., and D. Firth. 2011. <span>“Multinomial Logit Bias Reduction via the Poisson Log-Linear Model.”</span> <em>Biometrika</em> 98 (3): 755–59.
 </div>
-<div id="ref-kosmidis:2019">
-<p>Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2020. “Mean and Median Bias Reduction in Generalized Linear Models.” <em>Statistics and Computing</em> 30: 43–59. <a href="https://doi.org/10.1007/s11222-019-09860-6">https://doi.org/10.1007/s11222-019-09860-6</a>.</p>
+<div id="ref-kosmidis:2019" class="csl-entry">
+Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2020. <span>“Mean and Median Bias Reduction in Generalized Linear Models.”</span> <em>Statistics and Computing</em> 30: 43–59. <a href="https://doi.org/10.1007/s11222-019-09860-6">https://doi.org/10.1007/s11222-019-09860-6</a>.
 </div>
 </div>
 </div>
