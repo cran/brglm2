@@ -6,11 +6,11 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 library("brglm2")
 data("alligators", package = "brglm2")
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 agresti_contrasts <- list(lake = contr.treatment(levels(alligators$lake), base = 4),
                           size = contr.treatment(levels(alligators$size), base = 2))
 all_ml <- brmultinom(foodchoice ~ size + lake , weights = freq,
@@ -24,24 +24,24 @@ round(all_ml_summary$coefficients, 2)
 ## Estimated standard errors
 round(all_ml_summary$standard.errors, 2)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 all_mean <- update(all_ml, type = "AS_mean")
 summary(all_mean)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 all_median <- update(all_ml, type = "AS_median")
 summary(all_median)
 
-## ---- echo = TRUE, error = TRUE-----------------------------------------------
-all_ml_sparse <- update(all_ml, weights = round(freq/3), slowit = 0.2)
+## ----echo = TRUE, error = TRUE------------------------------------------------
+all_ml_sparse <- update(all_ml, weights = round(freq/3), slowit = 0.1)
 summary(all_ml_sparse)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 library("detectseparation")
 se_ratios <- check_infinite_estimates(all_ml_sparse)
 plot(se_ratios)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 all_mean_sparse <- update(all_ml_sparse, type = "AS_mean")
 summary(all_mean_sparse)
 

@@ -51,7 +51,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -150,6 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
+margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -388,52 +389,52 @@ variable corresponds to the number of revertant colonies observed
 (<code>plate</code>), and the covariate (<code>dose</code>) is the dose
 level of quinoline on the plate in micro-grams. The code chunk below
 sets up a data frame with the data from replicate 1 in <span class="citation">Margolin, Kim, and Risko (1989, Table 1)</span>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">33</span>, <span class="dv">20</span>,</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>          <span class="dv">21</span>, <span class="dv">18</span>, <span class="dv">26</span>, <span class="dv">41</span>, <span class="dv">38</span>, <span class="dv">27</span>,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>          <span class="dv">29</span>, <span class="dv">21</span>, <span class="dv">33</span>, <span class="dv">60</span>, <span class="dv">41</span>, <span class="dv">42</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dose <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">33</span>, <span class="dv">100</span>, <span class="dv">333</span>, <span class="dv">1000</span>), <span class="dv">3</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>plate <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">each =</span> <span class="dv">6</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>(salmonella <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(freq, dose, plate))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    freq dose plate</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    15    0     1</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    16   10     1</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    16   33     1</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    27  100     1</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    33  333     1</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6    20 1000     1</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7    21    0     2</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8    18   10     2</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9    26   33     2</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10   41  100     2</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11   38  333     2</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12   27 1000     2</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13   29    0     3</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14   21   10     3</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15   33   33     3</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16   60  100     3</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17   41  333     3</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18   42 1000     3</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">33</span>, <span class="dv">20</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>          <span class="dv">21</span>, <span class="dv">18</span>, <span class="dv">26</span>, <span class="dv">41</span>, <span class="dv">38</span>, <span class="dv">27</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>          <span class="dv">29</span>, <span class="dv">21</span>, <span class="dv">33</span>, <span class="dv">60</span>, <span class="dv">41</span>, <span class="dv">42</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>dose <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">33</span>, <span class="dv">100</span>, <span class="dv">333</span>, <span class="dv">1000</span>), <span class="dv">3</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>plate <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">each =</span> <span class="dv">6</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>(salmonella <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(freq, dose, plate))</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;    freq dose plate</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; 1    15    0     1</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; 2    16   10     1</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt; 3    16   33     1</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt; 4    27  100     1</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt; 5    33  333     1</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt; 6    20 1000     1</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt; 7    21    0     2</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt; 8    18   10     2</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a><span class="co">#&gt; 9    26   33     2</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co">#&gt; 10   41  100     2</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a><span class="co">#&gt; 11   38  333     2</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co">#&gt; 12   27 1000     2</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="co">#&gt; 13   29    0     3</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a><span class="co">#&gt; 14   21   10     3</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co">#&gt; 15   33   33     3</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a><span class="co">#&gt; 16   60  100     3</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="co">#&gt; 17   41  333     3</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt; 18   42 1000     3</span></span></code></pre></div>
 <p>The following code chunks reproduces <span class="citation">Kenne
 Pagui, Salvan, and Sartori (2020, Table 2)</span> by estimating the
 negative binomial regression model with log link and model formula</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ames_f <span class="ot">&lt;-</span> freq <span class="sc">~</span> dose <span class="sc">+</span> <span class="fu">log</span>(dose <span class="sc">+</span> <span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>ames_f <span class="ot">&lt;-</span> freq <span class="sc">~</span> dose <span class="sc">+</span> <span class="fu">log</span>(dose <span class="sc">+</span> <span class="dv">10</span>)</span></code></pre></div>
 <p>using the various estimation methods that <code>brnb()</code>
 supports.</p>
 <div id="maximum-likelihood-estimation" class="section level2">
 <h2>Maximum likelihood estimation</h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;brglm2&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ames_ML <span class="ot">&lt;-</span> <span class="fu">brnb</span>(ames_f, <span class="at">link =</span> <span class="st">&quot;log&quot;</span>, <span class="at">data =</span> salmonella,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">transformation =</span> <span class="st">&quot;identity&quot;</span>,  <span class="at">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_ML, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_ML<span class="sc">$</span>vcov.mean), ames_ML<span class="sc">$</span>vcov.dispersion))</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.1976 0.3246</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3125 0.0879</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0488 0.0281</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;brglm2&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>ames_ML <span class="ot">&lt;-</span> <span class="fu">brnb</span>(ames_f, <span class="at">link =</span> <span class="st">&quot;log&quot;</span>, <span class="at">data =</span> salmonella,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                <span class="at">transformation =</span> <span class="st">&quot;identity&quot;</span>,  <span class="at">type =</span> <span class="st">&quot;ML&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_ML, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_ML<span class="sc">$</span>vcov.mean), ames_ML<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.1976 0.3246</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3125 0.0879</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0488 0.0281</span></span></code></pre></div>
 </div>
 <div id="bias-reduction" class="section level2">
 <h2>Bias reduction</h2>
@@ -441,50 +442,50 @@ supports.</p>
 <h3>Asymptotic mean-bias correction</h3>
 <p>The following code chunks updates the model fit using asymptotic
 mean-bias correction for estimating the model parameters</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ames_BC <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;correction&quot;</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BC, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BC<span class="sc">$</span>vcov.mean), ames_BC<span class="sc">$</span>vcov.dispersion))</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2098 0.3482</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3105 0.0947</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0626 0.0328</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>ames_BC <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;correction&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BC, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BC<span class="sc">$</span>vcov.mean), ames_BC<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2098 0.3482</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3105 0.0947</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0626 0.0328</span></span></code></pre></div>
 </div>
 <div id="mean-bias-reducing-adjusted-score-equations" class="section level3">
 <h3>Mean-bias reducing adjusted score equations</h3>
 <p>The corresponding fit using mean-bias reducing adjusted score
 equations is</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ames_BRmean <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mean&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmean, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmean<span class="sc">$</span>vcov.mean), ames_BRmean<span class="sc">$</span>vcov.dispersion))</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2155 0.3515</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3092 0.0956</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0647 0.0334</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>ames_BRmean <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mean&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmean, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmean<span class="sc">$</span>vcov.mean), ames_BRmean<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2155 0.3515</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3092 0.0956</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0647 0.0334</span></span></code></pre></div>
 </div>
 </div>
 <div id="median-bias-reducing-adjusted-score-equations" class="section level2">
 <h2>Median-bias reducing adjusted score equations</h2>
 <p>The corresponding fit using median-bias reducing adjusted score
 equations is</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ames_BRmedian <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_median&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmedian, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmedian<span class="sc">$</span>vcov.mean), ames_BRmedian<span class="sc">$</span>vcov.dispersion))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2114 0.3592</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3091 0.0978</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0692 0.0350</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>ames_BRmedian <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_median&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmedian, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmedian<span class="sc">$</span>vcov.mean), ames_BRmedian<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2114 0.3592</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3091 0.0978</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0692 0.0350</span></span></code></pre></div>
 </div>
 <div id="mixed-bias-reducing-adjusted-score-equations" class="section level2">
 <h2>Mixed bias reducing adjusted score equations</h2>
@@ -501,17 +502,17 @@ parameter is invariant in terms of its median bias properties under
 monotone transformations.</p>
 <p>Fitting the model using mixed-bias reducing adjusted score equations
 gives</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ames_BRmixed <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mixed&quot;</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmixed, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmixed<span class="sc">$</span>vcov.mean), ames_BRmixed<span class="sc">$</span>vcov.dispersion))</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2170 0.3591</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3088 0.0978</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0693 0.0350</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>ames_BRmixed <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mixed&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="do">## Estimated regression and dispersion parameters</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">coef</span>(ames_BRmixed, <span class="at">model =</span> <span class="st">&quot;full&quot;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="do">## Estimated standard errors for the regression parameters</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>sds <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">diag</span>(ames_BRmixed<span class="sc">$</span>vcov.mean), ames_BRmixed<span class="sc">$</span>vcov.dispersion))</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(est, sds), <span class="dv">4</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;                          est    sds</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; (Intercept)           2.2170 0.3591</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt; dose                 -0.0010 0.0004</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; log(dose + 10)        0.3088 0.0978</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt; identity(dispersion)  0.0693 0.0350</span></span></code></pre></div>
 <!-- # Epileptic seizures data -->
 <!--  @kenne:20[, Section 5.2] provides a detailed description of the variables recorded in the data set. -->
 <!-- ```{r, echo = TRUE} -->
@@ -590,7 +591,7 @@ associated paper. You can find information on how to do this by typing
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-agresti:15" class="csl-entry">
 Agresti, A. 2015. <em>Foundations of Linear and Generalized Linear
 Models</em>. Wiley Series in Probability and Statistics. Wiley.

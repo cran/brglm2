@@ -49,6 +49,7 @@ ul.task-list{list-style: none;}
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
+margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -463,8 +464,8 @@ a&#39;&#39;_i} \, ,
 asymptotic order than the maximum likelihood estimator and <span class="math inline">\(\tilde\phi\)</span> with median bias of smaller
 asymptotic order than the maximum likelihood estimator.</p>
 </div>
-<div id="maximum-penalized-likelihood-with-powers-of-jefreys-prior-as-penalty" class="section level3">
-<h3>Maximum penalized likelihood with powers of Jefreys prior as
+<div id="maximum-penalized-likelihood-with-powers-of-jeffreys-prior-as-penalty" class="section level3">
+<h3>Maximum penalized likelihood with powers of Jeffreys prior as
 penalty</h3>
 <p>The likelihood penalized by a power of the Jeffreys prior <span class="math display">\[
 |i_{\beta\beta}|^a |i_{\phi\phi}|^a \quad a &gt; 0
@@ -510,8 +511,8 @@ step-halving. The algorithm is as follows:</p>
 <li>Starting values <span class="math inline">\(\beta^{(0)}\)</span> and
 <span class="math inline">\(\phi^{(0)}\)</span></li>
 <li><span class="math inline">\(\epsilon &gt; 0\)</span>: tolerance for
-the <span class="math inline">\(L1\)</span> norm of the direction before
-reporting convergence</li>
+the <span class="math inline">\(L^\infty\)</span> norm of the search
+direction before reporting convergence</li>
 <li><span class="math inline">\(M\)</span>: maximum number of halving
 steps that can be taken</li>
 </ul>
@@ -548,8 +549,8 @@ A_\phi\left(\beta^{(0)}, \phi^{(0)}\right)\right\}\)</span></p></li>
 <li><p><span class="math inline">\(v_\phi^{(m)} \leftarrow
 \upsilon_\phi^{(k)}\)</span></p></li>
 <li><p><span class="math inline">\(d \leftarrow
-\left|v_\beta^{(m)}\right|_1 +
-\left|v_\phi^{(m)}\right|\)</span></p></li>
+\left|\left|(v_\beta^{(m)},
+v_\phi^{(m)})\right|\right|_\infty\)</span></p></li>
 </ol>
 <p><em>Update parameters</em></p>
 <ol start="10" style="list-style-type: decimal">
@@ -571,8 +572,8 @@ A_\phi\left(\beta^{(0)}, \phi^{(0)}\right)\right\}\)</span></p></li>
 </ol>
 <p><em>Continue or break halving within inner loop</em></p>
 <ol start="14" style="list-style-type: decimal">
-<li><p>if <span class="math inline">\(m + 1 &lt; M\)</span> and <span class="math inline">\(\left|v_\beta^{(m + 1)}\right|_1 +
-\left|v_\phi^{(m + 1)}\right| &gt; d\)</span></p>
+<li><p>if <span class="math inline">\(m + 1 &lt; M\)</span> and <span class="math inline">\(\left|\left|(v_\beta^{(m + 1)}, v_\phi^{(m +
+1)})\right|\right|_\infty &gt; d\)</span></p>
 <p>14.1. <span class="math inline">\(m \leftarrow m + 1\)</span></p>
 <p>14.2. GO TO 10</p></li>
 <li><p>else</p>
@@ -587,8 +588,8 @@ v_f^{(m + 1)}\)</span></p></li>
 </ol>
 <p><em>Continue or break outer loop</em></p>
 <ol start="16" style="list-style-type: decimal">
-<li><p>if <span class="math inline">\(k + 1 &lt; K\)</span> and <span class="math inline">\(\left|\upsilon_\beta^{(k + 1)}\right|_1 +
-\left|\upsilon_\phi^{(k + 1)}\right| &gt; \epsilon\)</span></p>
+<li><p>if <span class="math inline">\(k + 1 &lt; K\)</span> and <span class="math inline">\(\left|\left|(\upsilon_\beta^{(k + 1)},
+\upsilon_\phi^{(k + 1)})\right|\right|_\infty &gt; \epsilon\)</span></p>
 <p>16.1 <span class="math inline">\(k \leftarrow k + 1\)</span></p>
 <p>16.2. GO TO 4</p></li>
 <li><p>else</p>
@@ -653,7 +654,7 @@ associated paper. You can find information on how to do this by typing
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-albert:84" class="csl-entry">
 Albert, A., and J. A. Anderson. 1984. <span>“On the Existence of Maximum
 Likelihood Estimates in Logistic Regression Models.”</span>

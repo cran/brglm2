@@ -6,42 +6,42 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 library("brglm2")
 data("aids", package = "brglm2")
 aids
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 aids_mod <- glm(cbind(symptomatic, asymptomatic) ~ AZT + race, 
                   family = binomial(), data = aids)
 summary(aids_mod)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 expo(aids_mod, type = "ML")
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 expo(aids_mod, type = "correction*")
 expo(aids_mod, type = "Lylesetal2012")
 expo(aids_mod, type = "correction+")
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 expo(aids_mod, type = "AS_median")
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 data("endometrial", package = "brglm2")
 endometrialML <- glm(HG ~ NV + PI + EH, data = endometrial, family = binomial())
 endometrialML
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 library("detectseparation")
 update(endometrialML, method = detect_separation)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 expo(endometrialML, type = "correction*")
 expo(endometrialML, type = "correction+")
 expo(endometrialML, type = "Lylesetal2012")
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 aids_mod_br <- update(aids_mod, method = "brglmFit")
 expo(aids_mod_br, type = "correction*")
 

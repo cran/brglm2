@@ -6,40 +6,40 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 library("brglm2")
 data("stemcell", package = "brglm2")
 stem <- within(stemcell, religion <- as.numeric(religion))
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 stem_formula <- research ~ religion + gender
 stemcells_ml <- bracl(stem_formula, weights = frequency, data = stem,
                       parallel = TRUE, type = "ML")
 summary(stemcells_ml)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 class(stemcells_ml)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 stemcells_ml_full <- bracl(stem_formula, weights = frequency, data = stemcell,
                            parallel = FALSE, type = "ML")
 summary(stemcells_ml_full)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 (lrt <- deviance(stemcells_ml) - deviance(stemcells_ml_full))
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 (df1 <- df.residual(stemcells_ml) - df.residual(stemcells_ml_full))
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 pchisq(lrt, df1, lower.tail = FALSE)
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 summary(update(stemcells_ml, type = "AS_mean"))
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 summary(update(stemcells_ml, type = "AS_median"))
 
-## ---- echo = TRUE-------------------------------------------------------------
+## ----echo = TRUE--------------------------------------------------------------
 predict(stemcells_ml, type = "probs")
 
