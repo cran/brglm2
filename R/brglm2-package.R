@@ -102,12 +102,14 @@
 #' @import enrichwith
 #' @import Matrix
 #' @import MASS
+#' @import nleqslv
+#' @importFrom statmod gauss.quad
 #' @importFrom graphics plot
 #' @importFrom nnet class.ind
 #' @importFrom numDeriv grad
 #' @useDynLib brglm2
 #'
-NULL
+"_PACKAGE"
 
 ## NAMESPACE should have import(stats), import(Matrix)
 
@@ -127,4 +129,9 @@ ordinal_superiority <- function(object, formula, data,
 #' @export
 expo <- function(object, type = c("ML", "correction", "AS_median", "Lylesetal2012"), level = 0.95) {
     UseMethod("expo")
+}
+
+#' @export
+plrtest <- function(object1, object2, ...) {
+    UseMethod("plrtest")
 }

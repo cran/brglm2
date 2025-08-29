@@ -33,8 +33,10 @@ all_median <- update(all_ml, type = "AS_median")
 summary(all_median)
 
 ## ----echo = TRUE, error = TRUE------------------------------------------------
+try({
 all_ml_sparse <- update(all_ml, weights = round(freq/3), slowit = 0.1)
 summary(all_ml_sparse)
+})
 
 ## ----echo = TRUE--------------------------------------------------------------
 library("detectseparation")

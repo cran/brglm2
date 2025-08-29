@@ -129,6 +129,12 @@
 #'
 #' [brglm_fit()] is an alias to [brglmFit()].
 #'
+#' @return
+#'
+#' An object inheriting from [`"brglmFit"`][brglmFit()] object, which
+#' is a list having the same elements to the list that
+#' [stats::glm.fit()] returns, with a few extra arguments.
+#'
 #' @author Ioannis Kosmidis `[aut, cre]` \email{ioannis.kosmidis@warwick.ac.uk}, Euloge Clovis Kenne Pagui `[ctb]` \email{kenne@stat.unipd.it}
 #'
 #' @seealso [brglmControl()], [glm.fit()], [glm()]
@@ -167,7 +173,7 @@
 #'
 #' @examples
 #' ## The lizards example from ?brglm::brglm
-#' data("lizards")
+#' data("lizards", package = "brglm2")
 #' # Fit the model using maximum likelihood
 #' lizardsML <- glm(cbind(grahami, opalinus) ~ height + diameter +
 #'                  light + time, family = binomial(logit), data = lizards,
@@ -768,18 +774,15 @@ brglmFit <- function(x, y, weights = rep(1, nobs), start = NULL, etastart = NULL
                 y.adj <- y + if (family$family == "poisson") (!(is_correction)) * 0.5 * adj else 0
             }
             ## ML fit to get starting values
-            warn <- getOption("warn")
             ## Get startng values and kill warnings whilst doing that
-            options(warn = -1)
-            tempFit <- glm.fit(x = x, y = y.adj, weights = weights.adj,
-                               etastart = etastart, mustart = mustart,
-                               offset = offset, family = family,
-                               control = list(epsilon = control$epsilon,
-                                              maxit = 10000, trace = FALSE),
-                               intercept = intercept)
-
-            ## Set warn to its original value
-            options(warn = warn)
+            suppressWarnings(
+                tempFit <- glm.fit(x = x, y = y.adj, weights = weights.adj,
+                                   etastart = etastart, mustart = mustart,
+                                   offset = offset, family = family,
+                                   control = list(epsilon = control$epsilon,
+                                                  maxit = 10000, trace = FALSE),
+                                   intercept = intercept)
+            )
             betas <- coef(tempFit)
             names(betas) <- betas_names
             dispList <- estimate_dispersion(betas, y = y)
@@ -954,8 +957,8 @@ brglmFit <- function(x, y, weights = rep(1, nobs), start = NULL, etastart = NULL
                         trace_iteration()
                     }
                 }
-                failed <- failed_adjustment_beta | failed_inversion_beta | failed_adjustment_zeta | failed_inversion_zeta
-                if (failed | linf_current < control$epsilon) {
+                failed <- failed_adjustment_beta || failed_inversion_beta || failed_adjustment_zeta || failed_inversion_zeta
+                if (failed || linf_current < control$epsilon) {
                     break
                 }
             }
@@ -1070,7 +1073,7 @@ brglmFit <- function(x, y, weights = rep(1, nobs), start = NULL, etastart = NULL
                             control = control0[c("epsilon", "maxit", "type", "transformation", "slowit")],
                             start = if (no_dispersion) linkfun(mean(y)) else c(linkfun(mean(y)), 1))
         ## FIX: Starting values above are hard-coded. Change in future versions
-        nullmus <- nullFit$fitted
+        nullmus <- nullFit$fitted.values
     }
     ## If there is an offset but not an intercept then the fitted
     ## value is the inverse link evaluated at the offset
@@ -1124,6 +1127,7 @@ brglmFit <- function(x, y, weights = rep(1, nobs), start = NULL, etastart = NULL
          transformation = control$transformation,
          ## cov.unscaled = tcrossprod(R_matrix),
          type = control$type,
+         control = control,
          class = "brglmFit")
 }
 
@@ -1172,7 +1176,7 @@ coef.brglmFit <- function(object, model = c("mean", "full", "dispersion"), ...) 
     })
 }
 
-#' [summary()] method for [brglmFit] objects
+#' [summary()] method for [`"brglmFit"`][brglmFit()] objects
 #'
 #' @inheritParams stats::summary.glm
 #'
@@ -1209,7 +1213,7 @@ summary.brglmFit <- function(object, dispersion = NULL,
 }
 
 #' Method for computing confidence intervals for one or more
-#' regression parameters in a [`"brglmFit"`][brglmFit] object
+#' regression parameters in a [`"brglmFit"`][brglmFit()] object
 #'
 #' @inheritParams stats::confint
 #'
