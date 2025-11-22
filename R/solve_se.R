@@ -18,8 +18,9 @@
 #'
 #' @param kappa asymptotic ratio of columns/rows of the design
 #'     matrix. `kappa` should be in `(0, 1)`.
-#' @param ss signal strength or corrupted signal strength, depending
-#'     on whether `corrupted = TRUE` or not. See Details.
+#' @param ss square root of signal strength or of corrupted signal
+#'     strength, depending on whether `corrupted = TRUE` or not. See
+#'     Details.
 #' @param alpha the shrinkage parameter of the MDYPL
 #'     estimator. `alpha` should be in `(0, 1)`.
 #' @param intercept if `NULL` (default) then the MDYPL state evolution
@@ -29,11 +30,12 @@
 #'     Details.
 #' @param start a vector with starting values for `mu`, `b`,`sigma`
 #'     (and `iota` if `intercept` is numeric).
-#' @param corrupted if `FALSE` (default) then `ss` is signal strength
-#'     and `intercept`, if numeric, is the oracle intercept value. If
-#'     `TRUE`, then `ss` is the corrupted signal strength, and
-#'     `intercept`, if numeric, is the limit of the estimator computed
-#'     by [mdyplFit()] with shrinkage parameter `alpha`. See Details.
+#' @param corrupted if `FALSE` (default) then `ss` is the square root
+#'     of the signal strength and `intercept`, if numeric, is the
+#'     oracle intercept value. If `TRUE`, then `ss` is the square root
+#'     of the corrupted signal strength, and `intercept`, if numeric,
+#'     is the limit of the estimator computed by [mdyplFit()] with
+#'     shrinkage parameter `alpha`. See Details.
 #' @param gh A list with the Gauss-Hermite quadrature nodes and
 #'     weights, as returned from `statmod::gauss.quad()` with `kind =
 #'     "hermite"`. Default is `NULL`, in which case `gh` is set to
@@ -119,7 +121,7 @@
 #' @examples
 #'
 #' ## Reproducing Table 13 of Zhao et al. (2022, DOI: 10.3150/21-BEJ1401)
-#' \dontrun{
+#' \donttest{
 #'
 #' thetas <- c(0, 0.5, 1, 2, 2.5)
 #' gamma0 <- 5
@@ -141,6 +143,9 @@
 #' }
 #' @export
 solve_se <- function(kappa, ss, alpha, intercept = NULL, start, corrupted = FALSE, gh = NULL, prox_tol = 1e-10, transform = TRUE, init_method = "Nelder-Mead", init_iter = 50, ...) {
+    no_intercept <- is.null(intercept)
+    npar <- 3 + !no_intercept
+    stopifnot(length(start) == npar)
     is_corrupted <- isTRUE(corrupted)
     init_solver <- if (is_corrupted) optim_se_corrupted else optim_se
     main_solver <- if (is_corrupted) nleqslv_se_corrupted else nleqslv_se
@@ -244,8 +249,6 @@ se_funcs <- function(kappa, ss, alpha, intercept = NULL, iota = NULL,
 nleqslv_se <- function(kappa, gamma, alpha, intercept = NULL, start, gh = NULL, prox_tol = 1e-10, transform = TRUE, ...) {
     no_intercept <- is.null(intercept)
     g <- se_funcs(kappa, gamma, alpha, intercept, iota = NULL, gh, prox_tol, corrupted = FALSE, transform)
-    npar <- 3 + !no_intercept
-    stopifnot(length(start) == npar)
     start <- c(if (transform) log(start[1:3]) else start[1:3],
                if (no_intercept) NULL else start[4])
     res <- nleqslv(start, g, ...)
@@ -268,8 +271,6 @@ nleqslv_se <- function(kappa, gamma, alpha, intercept = NULL, start, gh = NULL, 
 nleqslv_se_corrupted <- function(kappa, nu, alpha, iota = NULL, start, gh = NULL, prox_tol = 1e-10, transform = TRUE, ...) {
     no_intercept <- is.null(iota)
     g <- se_funcs(kappa, nu, alpha, intercept = NULL, iota, gh, prox_tol, corrupted = TRUE, transform)
-    npar <- 3 + !no_intercept
-    stopifnot(length(start) == npar)
     start <- c(if (transform) log(start[1:3]) else start[1:3],
                if (no_intercept) NULL else start[4])
     suppressWarnings(res <- nleqslv(start, g, ...))
@@ -294,8 +295,6 @@ optim_se <- function(kappa, gamma, alpha, intercept = NULL, start, gh = NULL, pr
     no_intercept <- is.null(intercept)
     g <- se_funcs(kappa, gamma, alpha, intercept, iota = NULL, gh, prox_tol, corrupted = FALSE, transform = TRUE)
     npar <- 3 + !no_intercept
-    stopifnot(length(start) == npar)
-    start <- c(log(start[1:3]), if (no_intercept) NULL else start[4])
     obj <- function(pars) {
         sum(g(pars)^2)
     }
@@ -305,7 +304,7 @@ optim_se <- function(kappa, gamma, alpha, intercept = NULL, start, gh = NULL, pr
     } else {
         soln <- c(exp(res$par[1:3]), res$par[4])
     }
-    attr(soln, "funcs") <- g(soln)
+    attr(soln, "funcs") <- g(res$par)
     attr(soln, "iter") <- res$counts
     attr(soln, "convergence") <- res$convergence
     attr(soln, "message") <- res$message
@@ -315,8 +314,6 @@ optim_se <- function(kappa, gamma, alpha, intercept = NULL, start, gh = NULL, pr
 optim_se_corrupted <- function(kappa, nu, alpha, iota = NULL, start, gh = NULL, prox_tol = 1e-10, transform = TRUE, ...) {
     no_intercept <- is.null(iota)
     g <- se_funcs(kappa, nu, alpha, intercept = NULL, iota, gh, prox_tol, corrupted = TRUE, transform = TRUE)
-    npar <- 3 + !no_intercept
-    stopifnot(length(start) == npar)
     start <- c(log(start[1:3]), if (no_intercept) NULL else start[4])
     obj <- function(pars) {
         sum(g(pars)^2)
@@ -327,112 +324,86 @@ optim_se_corrupted <- function(kappa, nu, alpha, iota = NULL, start, gh = NULL, 
     } else {
         soln <- c(exp(res$par[1:3]), res$par[4])
     }
-    suppressWarnings(attr(soln, "funcs") <- g(soln))
+    suppressWarnings(attr(soln, "funcs") <- g(res$par))
     attr(soln, "iter") <- res$counts
     attr(soln, "convergence") <- res$convergence
     attr(soln, "message") <- res$message
     soln
 }
 
-## solvers based on https://cran.r-project.org/package=trust
-## trust_se <- function(kappa, gamma, alpha, intercept = NULL, start, gh = NULL, prox_tol = 1e-10, transform = FALSE, ...) {
-##     ssq <- function(x) sum(x^2)
-##     no_intercept <- is.null(intercept)
-##     if (no_intercept) {
-##         npars <- 3
-##         g <- function(pars) {
-##             pars <- exp(pars)
-##             se0(mu = pars[1], b = pars[2], sigma = pars[3], kappa = kappa, gamma = gamma, alpha = alpha, gh = gh, prox_tol = prox_tol) |> ssq()
-##         }
-##         start <- log(start)
-##     } else {
-##         npars <- 4
-##         stopifnot(length(start) == 4)
-##         no_int <- 1:3
-##         g <- function(pars) {
-##             pars[no_int] <- exp(pars[no_int])
-##             se1(mu = pars[1], b = pars[2], sigma = pars[3], iota = pars[4], kappa = kappa, gamma = gamma, alpha = alpha, intercept = intercept, gh = gh, prox_tol = prox_tol) |> ssq()
-##         }
-##         start[no_int] <- log(start[no_int])
-##     }
-##     h <- matrix(0, npars, npars)
-##     upp_inds <- upper.tri(h, diag = TRUE)
-##     low_inds <- lower.tri(h, diag = TRUE)
-##     vec2mat <- function(vec, d) {
-##         h <- matrix(NA, npars, npars)
-##         h[upp_inds] <- vec
-##         h[low_inds] <- t(h)[low_inds]
-##         h
-##     }
-##     obj <- function(pars) {
-##         v <- numDeriv::genD(g, pars)
-##         list(value = v$f0,
-##              gradient = v$D[1:npars],
-##              hessian = vec2mat(v$D[-c(1:npars)]))
-##     }
-##     res <- trust(obj, start, rinit = 1, rmax = 5, ...)
-##     if (no_intercept) {
-##         soln <- exp(res$argument)
-##     } else {
-##         soln <- c(exp(res$argument[no_int]), res$argument[4])
-##     }
-##     attr(soln, "objective") <- res$value
-##     attr(soln, "iter") <- res$iterations
-##     soln
-## }
+## Logistic ridge regression; currently not exported
+solve_se_ridge <- function(kappa, ss, lambda, start, gh = NULL, prox_tol = 1e-10, transform = TRUE, init_method = "Nelder-Mead", init_iter = 50, ...) {
+    init_solver <- optim_se_ridge
+    main_solver <- nleqslv_se_ridge
+    stopifnot(length(start) == 3)
+    if (is.null(gh))
+        gh <- gauss.quad(200, kind = "hermite")
+    if (isTRUE(init_iter == "only")) {
+        start <- init_solver(kappa, ss, lambda, start, gh, prox_tol, method = init_method, ...)
+        opt_chain <- paste0("optim(method = ", init_method, ")")
+    } else {
+        if (init_iter > 0) {
+            start <- init_solver(kappa, ss, lambda, start, gh, prox_tol, method = init_method, control = list(maxit = init_iter));
+            opt_chain <- paste0("optim(method = ", init_method, ", maxit = ", init_iter, ") -> ")
+        } else {
+            opt_chain <- ""
+        }
+        start <- main_solver(kappa, ss, lambda, start, gh, prox_tol, transform, ...)
+        opt_chain <- paste0(opt_chain, "nleqslv()")
+    }
+    attr(start, "optimization-chain") <- opt_chain
+    start
+}
 
-## trust_se_est <- function(kappa, nu, alpha, iota = NULL, start, gh = NULL, prox_tol = 1e-10, transform = FALSE, ...) {
-##     ssq <- function(x) sum(x^2)
-##     no_intercept <- is.null(iota)
-##     if (no_intercept) {
-##         npars <- 3
-##         g <- function(pars) {
-##             pars <- exp(pars)
-##             mu <- pars[1]
-##             b <- pars[2]
-##             sigma <- pars[3]
-##             gamma <- sqrt(nu^2 - kappa * sigma^2) / mu
-##             if (is.na(gamma)) return(NA)
-##             se0(mu = mu, b = b, sigma = sigma, kappa = kappa, gamma = gamma, alpha = alpha, gh = gh, prox_tol = prox_tol) |> ssq()
-##         }
-##         start <- log(start)
-##     } else {
-##         npars <- 4
-##         stopifnot(length(start) == 4)
-##         no_int <- 1:3
-##         g <- function(pars) {
-##             pars[no_int] <- exp(pars[no_int])
-##             mu <- pars[1]
-##             b <- pars[2]
-##             sigma <- pars[3]
-##             gamma <- sqrt(nu^2 - kappa * sigma^2) / mu
-##             if (is.na(gamma)) return(NA)
-##             se1(mu = mu, b = b, sigma = sigma, iota = iota, kappa = kappa, gamma = gamma, alpha = alpha, intercept = pars[4], gh = gh, prox_tol = prox_tol) |> ssq()
-##         }
-##         start[no_int] <- log(start[no_int])
-##     }
-##     h <- matrix(0, npars, npars)
-##     upp_inds <- upper.tri(h, diag = TRUE)
-##     low_inds <- lower.tri(h, diag = TRUE)
-##     vec2mat <- function(vec, d) {
-##         h <- matrix(NA, npars, npars)
-##         h[upp_inds] <- vec
-##         h[low_inds] <- t(h)[low_inds]
-##         h
-##     }
-##     obj <- function(pars) {
-##         v <- numDeriv::genD(g, pars)
-##         list(value = v$f0,
-##              gradient = v$D[1:npars],
-##              hessian = vec2mat(v$D[-c(1:npars)]))
-##     }
-##     res <- trust(obj, start, rinit = 1, rmax = 5, ...)
-##     if (no_intercept) {
-##         soln <- exp(res$argument)
-##     } else {
-##         soln <- c(exp(res$argument[no_int]), res$argument[4])
-##     }
-##     attr(soln, "objective") <- res$value
-##     attr(soln, "iter") <- res$iterations
-##     soln
-## }
+nleqslv_se_ridge <- function(kappa, ss, lambda, start, gh = NULL, prox_tol = 1e-10, transform = TRUE, ...) {
+    if (transform) {
+        start <- log(start)
+        g <- function(pars) {
+            pars <- exp(pars)
+            se0_ridge(pars[1], pars[2], pars[3], kappa, ss, lambda, gh, prox_tol)
+        }
+    } else {
+        g <- function(pars) {
+            se0_ridge(pars[1], pars[2], pars[3], kappa, ss, lambda, gh, prox_tol)
+        }
+    }
+    res <- nleqslv(start, g, ...)
+    if (transform) {
+        soln <- exp(res$x)
+    } else {
+        soln <- res$x
+    }
+    attr(soln, "funcs") <- res$fvec
+    attr(soln, "iter") <- res$iter
+    attr(soln, "message") <- res$message
+    attr(soln, "nleqslv_termination_code") <- res$termcd
+    soln
+}
+
+optim_se_ridge <- function(kappa, ss, lambda, start, gh = NULL, prox_tol = 1e-10, transform = TRUE, ...) {
+    if (transform) {
+        start <- log(start)
+        g <- function(pars) {
+            pars <- exp(pars)
+            se0_ridge(pars[1], pars[2], pars[3], kappa, ss, lambda, gh, prox_tol)
+        }
+    } else {
+        g <- function(pars) {
+            se0_ridge(pars[1], pars[2], pars[3], kappa, ss, lambda, gh, prox_tol)
+        }
+    }
+    obj <- function(pars) {
+        sum(g(pars)^2)
+    }
+    res <- optim(start, obj, ...)
+    if (transform) {
+        soln <- exp(res$par)
+    } else {
+        soln <- res$par
+    }
+    attr(soln, "funcs") <- g(res$par)
+    attr(soln, "iter") <- res$counts
+    attr(soln, "convergence") <- res$convergence
+    attr(soln, "message") <- res$message
+    soln
+}

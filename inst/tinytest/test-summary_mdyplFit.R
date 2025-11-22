@@ -36,7 +36,7 @@ cc["(Intercept)"] <- se_pars[4]
 cc[-1] <- cc[-1] / se_pars[1]
 expect_equal(cc, coef(summ_mdypl_c)[, "Estimate"])
 
-ttt <- brglm2:::taus(liz_mdypl)
+ttt <- brglm2:::taus(model.matrix(liz_mdypl))
 ses_c <- c(NA, se_pars[3] / (sqrt(nn) * ttt * se_pars[1]))
 expect_equal(unname(coef(summ_mdypl_c)[, "Std. Error"]), ses_c)
 expect_equal(coef(summ_mdypl_c)[, "z value"], cc / ses_c)
@@ -45,3 +45,11 @@ tots <- lizards$grahami + lizards$opalinus
 lizX <- model.matrix(liz_mdypl)
 expect_equal(summ_mdypl_c$aic,
              brglm2:::logist_aic(liz_mdypl$y_adj, weights(liz_ml), drop(plogis(lizX %*% cc)), weights(liz_ml)) + 2 * liz_mdypl$rank)
+
+
+## aliasing
+
+X <- model.matrix(liz_ml)
+glm(I(grahami / (grahami +  opalinus)) ~ -1 + X, weights = grahami + opalinus, data = lizards, family = binomial())
+
+
