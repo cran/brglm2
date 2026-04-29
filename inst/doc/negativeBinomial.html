@@ -151,7 +151,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
-margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -379,17 +378,17 @@ regression models) using either maximum likelihood or any of the various
 bias reduction and adjusted estimating functions methods provided by
 <code>brglmFit()</code> (see <code>?brglmFit</code> for resources).</p>
 <p>This vignette demonstrates the use of <code>brnb()</code> and of the
-associated methods, using the case studies in <span class="citation">Kenne Pagui, Salvan, and Sartori (2020)</span>.</p>
+associated methods, using the case studies in <span class="citation">Kenne Pagui et al. (2020)</span>.</p>
 </div>
 <div id="ames-salmonella-data" class="section level1">
 <h1>Ames salmonella data</h1>
-<p><span class="citation">Margolin, Kim, and Risko (1989)</span> provide
-data from an Ames salmonella reverse mutagenicity assay. The response
+<p><span class="citation">Margolin et al. (1989)</span> provide data
+from an Ames salmonella reverse mutagenicity assay. The response
 variable corresponds to the number of revertant colonies observed
 (<code>freq</code>) on each of three replicate plates
 (<code>plate</code>), and the covariate (<code>dose</code>) is the dose
 level of quinoline on the plate in micro-grams. The code chunk below
-sets up a data frame with the data from replicate 1 in <span class="citation">Margolin, Kim, and Risko (1989, Table 1)</span>.</p>
+sets up a data frame with the data from replicate 1 in <span class="citation">Margolin et al. (1989, Table 1)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">16</span>, <span class="dv">16</span>, <span class="dv">27</span>, <span class="dv">33</span>, <span class="dv">20</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>          <span class="dv">21</span>, <span class="dv">18</span>, <span class="dv">26</span>, <span class="dv">41</span>, <span class="dv">38</span>, <span class="dv">27</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>          <span class="dv">29</span>, <span class="dv">21</span>, <span class="dv">33</span>, <span class="dv">60</span>, <span class="dv">41</span>, <span class="dv">42</span>)</span>
@@ -416,8 +415,8 @@ sets up a data frame with the data from replicate 1 in <span class="citation">Ma
 <span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a><span class="co">#&gt; 17   41  333     3</span></span>
 <span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a><span class="co">#&gt; 18   42 1000     3</span></span></code></pre></div>
 <p>The following code chunks reproduces <span class="citation">Kenne
-Pagui, Salvan, and Sartori (2020, Table 2)</span> by estimating the
-negative binomial regression model with log link and model formula</p>
+Pagui et al. (2020, Table 2)</span> by estimating the negative binomial
+regression model with log link and model formula</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>ames_f <span class="ot">&lt;-</span> freq <span class="sc">~</span> dose <span class="sc">+</span> <span class="fu">log</span>(dose <span class="sc">+</span> <span class="dv">10</span>)</span></code></pre></div>
 <p>using the various estimation methods that <code>brnb()</code>
 supports.</p>
@@ -490,17 +489,17 @@ equations is</p>
 </div>
 <div id="mixed-bias-reducing-adjusted-score-equations" class="section level2">
 <h2>Mixed bias reducing adjusted score equations</h2>
-<p>As is done in <span class="citation">Kosmidis, Kenne Pagui, and
-Sartori (2020, sec. 4)</span> for generalized linear models, we can
-exploit the Fisher orthogonality of the regression parameters and the
-dispersion parameter and use a composite bias reduction adjustment to
-the score functions. Such an adjustment delivers mean-bias reduced
-estimates for the regression parameters and a median-bias reduced
-estimate for the dispersion parameter. The resulting estimates of the
-regression parameters are invariant in terms of their mean bias
-properties under arbitrary contrasts, and that of the dispersion
-parameter is invariant in terms of its median bias properties under
-monotone transformations.</p>
+<p>As is done in <span class="citation">Kosmidis et al. (2020, sec.
+4)</span> for generalized linear models, we can exploit the Fisher
+orthogonality of the regression parameters and the dispersion parameter
+and use a composite bias reduction adjustment to the score functions.
+Such an adjustment delivers mean-bias reduced estimates for the
+regression parameters and a median-bias reduced estimate for the
+dispersion parameter. The resulting estimates of the regression
+parameters are invariant in terms of their mean bias properties under
+arbitrary contrasts, and that of the dispersion parameter is invariant
+in terms of its median bias properties under monotone
+transformations.</p>
 <p>Fitting the model using mixed-bias reducing adjusted score equations
 gives</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>ames_BRmixed <span class="ot">&lt;-</span> <span class="fu">update</span>(ames_ML, <span class="at">type =</span> <span class="st">&quot;AS_mixed&quot;</span>)</span>
@@ -570,8 +569,8 @@ Improved estimation of the dispersion parameter results to larger
 estimated standard errors than maximum likelihood. Hence, the estimated
 standard errors based on the maximum likelihood estimates appear to be
 smaller than they should be, which is also supported by the simulation
-results in <span class="citation">Kenne Pagui, Salvan, and Sartori
-(2020, sec. 5)</span>.</p>
+results in <span class="citation">Kenne Pagui et al. (2020, sec.
+5)</span>.</p>
 </div>
 </div>
 <div id="relevant-resources" class="section level1">
@@ -592,7 +591,7 @@ associated paper. You can find information on how to do this by typing
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-agresti:15" class="csl-entry">
 Agresti, A. 2015. <em>Foundations of Linear and Generalized Linear
 Models</em>. Wiley Series in Probability and Statistics. Wiley.

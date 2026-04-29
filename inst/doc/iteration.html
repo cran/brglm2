@@ -49,7 +49,6 @@ ul.task-list{list-style: none;}
 div.csl-bib-body { }
 div.csl-entry {
 clear: both;
-margin-bottom: 0em;
 }
 .hanging div.csl-entry {
 margin-left:2em;
@@ -276,12 +275,12 @@ linear models</a> using various methods for bias reduction or maximum
 penalized likelihood with powers of the Jeffreys prior as penalty.
 Reduction of estimation bias is achieved either through the mean-bias
 reducing adjusted score equations in <span class="citation">Firth
-(1993)</span> and <span class="citation">I. Kosmidis and Firth
+(1993)</span> and <span class="citation">Kosmidis and Firth
 (2009)</span>, or through the direct subtraction of an estimate of the
 bias of the maximum likelihood estimator from the maximum likelihood
 estimates as prescribed in <span class="citation">Cordeiro and McCullagh
 (1991)</span>, or through the median-bias reducing adjusted score
-equations in <span class="citation">Kenne Pagui, Salvan, and Sartori
+equations in <span class="citation">Kenne Pagui et al.
 (2017)</span>.</p>
 <p>In the special case of generalized linear models for binomial,
 Poisson and multinomial responses (both nominal and ordinal), mean and
@@ -294,7 +293,7 @@ which can be passed directly to the <code>method</code> argument of the
 <code>glm</code> function. <code>brglmFit</code> implements a quasi-<a href="https://en.wikipedia.org/wiki/Scoring_algorithm">Fisher
 scoring</a> procedure, whose special cases result in various explicit
 and implicit bias reduction methods for generalized linear models <span class="citation">(the classification of bias reduction methods into
-explicit and implicit is given in I. Kosmidis 2014)</span>.</p>
+explicit and implicit is given in Kosmidis 2014)</span>.</p>
 </div>
 <div id="this-vignette" class="section level1">
 <h1>This vignette</h1>
@@ -311,7 +310,7 @@ functions for generalized linear models</li>
 <p>The bias-reducing quasi Fisher scoring iteration is also described in
 detail in the <a href="https://cran.r-project.org/package=enrichwith/vignettes/bias.html">bias
 vignette</a> of the <a href="https://cran.r-project.org/package=enrichwith"><strong>enrichwith</strong></a>
-R package. <span class="citation">I. Kosmidis and Firth (2010)</span>
+R package. <span class="citation">Kosmidis and Firth (2010)</span>
 describe a parallel quasi <a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton-Raphson</a>
 procedure.</p>
 <p>Most of the material in this vignette comes from a presentation by <a href="https://www.ikosmidis.com">Ioannis Kosmidis</a> at the useR! 2016
@@ -400,7 +399,7 @@ s_\beta + A_\beta &amp; = 0_p \\
 s_\phi + A_\phi &amp; = 0
 \end{align*}\]</span> results in estimators <span class="math inline">\(\tilde\beta\)</span> and <span class="math inline">\(\tilde\phi\)</span> with bias of smaller
 asymptotic order than the maximum likelihood estimator.</p>
-<p>The results in either <span class="citation">I. Kosmidis and Firth
+<p>The results in either <span class="citation">Kosmidis and Firth
 (2009)</span> or <span class="citation">Cordeiro and McCullagh
 (1991)</span> can then be used to re-express the adjustments in forms
 that are convenient for implementation. In particular, and after some
@@ -425,8 +424,8 @@ e.g. <code>?hatvalues</code>).</p>
 </div>
 <div id="median-bias-reducing-adjusted-score-functions" class="section level3">
 <h3>Median bias-reducing adjusted score functions</h3>
-<p>The results in <span class="citation">Kenne Pagui, Salvan, and
-Sartori (2017)</span> can be used to show that if <span class="math display">\[\begin{align*}
+<p>The results in <span class="citation">Kenne Pagui et al.
+(2017)</span> can be used to show that if <span class="math display">\[\begin{align*}
 A_\beta &amp; =  X^\top W (\xi + X u) \\
 A_\phi &amp; = \frac{p}{2\phi}+\frac{ \sum_{i = 1}^n m_i^3
                    a&#39;&#39;&#39;_i}{6\phi^2\sum_{i = 1}^n m_i^2
@@ -452,8 +451,8 @@ X)^{-1}]_{j}^\top / [(X^\top W X)^{-1}]_{jj}\)</span>.</p>
 </div>
 <div id="mixed-adjustments" class="section level3">
 <h3>Mixed adjustments</h3>
-<p>The results in <span class="citation">Ioannis Kosmidis, Kenne Pagui,
-and Sartori (2020)</span> can be used to show that if <span class="math display">\[\begin{align*}
+<p>The results in <span class="citation">Kosmidis et al. (2020)</span>
+can be used to show that if <span class="math display">\[\begin{align*}
 A_\beta &amp; = X^\top W \xi \,, \\
 A_\phi &amp; = \frac{p}{2\phi}+\frac{ \sum_{i = 1}^n m_i^3
                    a&#39;&#39;&#39;_i}{6\phi^2\sum_{i = 1}^n m_i^2
@@ -641,9 +640,9 @@ first version of the section “Median bias-reducing adjusted score
 functions”, and Ioannis Kosmidis brought the expressions for the median
 bias-reducing adjustments in the reduced form that is shown above and is
 implemented in <code>brglmFit()</code>.</p>
-<p><span class="citation">Ioannis Kosmidis, Kenne Pagui, and Sartori
-(2020)</span> provides more details about mean and median bias reduction
-in generalized linear models.</p>
+<p><span class="citation">Kosmidis et al. (2020)</span> provides more
+details about mean and median bias reduction in generalized linear
+models.</p>
 </div>
 <div id="citation" class="section level1">
 <h1>Citation</h1>
@@ -654,7 +653,7 @@ associated paper. You can find information on how to do this by typing
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-albert:84" class="csl-entry">
 Albert, A., and J. A. Anderson. 1984. <span>“On the Existence of Maximum
 Likelihood Estimates in Logistic Regression Models.”</span>
@@ -684,9 +683,9 @@ Kosmidis, I., and D. Firth. 2009. <span>“Bias Reduction in Exponential
 Family Nonlinear Models.”</span> <em>Biometrika</em> 96 (4): 793–804. <a href="https://doi.org/10.1093/biomet/asp055">https://doi.org/10.1093/biomet/asp055</a>.
 </div>
 <div id="ref-kosmidis:10" class="csl-entry">
-———. 2010. <span>“A Generic Algorithm for Reducing Bias in Parametric
-Estimation.”</span> <em>Electronic Journal of Statistics</em> 4:
-1097–1112. <a href="https://doi.org/10.1214/10-EJS579">https://doi.org/10.1214/10-EJS579</a>.
+Kosmidis, I., and D. Firth. 2010. <span>“A Generic Algorithm for
+Reducing Bias in Parametric Estimation.”</span> <em>Electronic Journal
+of Statistics</em> 4: 1097–112. <a href="https://doi.org/10.1214/10-EJS579">https://doi.org/10.1214/10-EJS579</a>.
 </div>
 <div id="ref-kosmidis:2019" class="csl-entry">
 Kosmidis, Ioannis, Euloge Clovis Kenne Pagui, and Nicola Sartori. 2020.
