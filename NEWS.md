@@ -1,3 +1,15 @@
+# brglm2 1.1.1
+
+## Bug fixes
+* Added `...` in `mdyplControl()` to allow for `tol` and `wtol`
+  arguments in `glm.fit()`.
+
+* Fixed a bug where offsets were ignored in `summary.mdyplFit()`.
+
+* Fixed a bug in `vcov.bracl()` that returned incorrect covariances
+  between coefficients for adjacent category logit models without
+  proportional odds.
+
 # brglm2 1.1.0
 
 ## Bug fixes
@@ -7,8 +19,11 @@
 
 ## Improvements, updates and additions
 
-`ordinal_superiority.bracl()` now handles adjacent category logit
-models with or without proportional odds.
+* `ordinal_superiority.bracl()` now handles adjacent category logit
+  models with or without proportional odds.
+  
+* `brglm_fit()` fails more gracefully, returning the fit based on the
+  latest estimates with warnings.
 
 # brglm2 1.0.1
 
@@ -350,6 +365,5 @@ Added `residuals()` methods for `brmultinom` and `bracl` objects
 # brglm2 0.1.2
 
 * First release.
-
 
 

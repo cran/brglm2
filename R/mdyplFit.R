@@ -234,6 +234,7 @@ mdyplFit <- function(x, y, weights = rep(1, nobs), start = NULL, etastart = NULL
     out$residuals <- (y - mus) / (mus * (1 - mus))
     out$y_adj <- y_adj
     out$y <- y
+    out$offset <- offset
     out$alpha <- alpha
     out$type <- "MPL_DY"
     out$control <- control
@@ -275,6 +276,8 @@ logist_aic <- function(y, n, mu, wt, dev) {
 #'     allowed. Default is `25`.
 #' @param trace logical indicating if output should be produced for
 #'     each iteration. Default is `FALSE`.
+#' @param ... further arguments passed to [mdyplControl()]. Currently
+#'     ignored in the output.
 #'
 #' @details
 #'
@@ -293,7 +296,8 @@ logist_aic <- function(y, n, mu, wt, dev) {
 #' @seealso [mdyplFit()], [glm.control()]
 #'
 #' @export
-mdyplControl <- function(alpha = NULL, epsilon = 1e-08, maxit = 25, trace = FALSE) {
+mdyplControl <- function(alpha = NULL, epsilon = 1e-08, maxit = 25, trace = FALSE,
+                         ...) {
     out <- glm.control(epsilon, maxit, trace)
     if (!is.null(alpha)) {
         if (!(is.numeric(alpha)) || isTRUE(alpha < 0) || isTRUE(alpha > 1))
